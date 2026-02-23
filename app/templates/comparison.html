@@ -1,0 +1,564 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+:root{
+--primary:#00d09c;
+--dark:#1f2937;
+--light:#f9fafb;
+--border:#e5e7eb;
+}
+
+body{
+background:#f5f7fa;
+}
+
+/* HERO */
+.compare-hero{
+text-align:center;
+padding:60px 20px 30px;
+}
+
+.compare-hero h1{
+font-size:42px;
+font-weight:800;
+color:#111827;
+margin-bottom:10px;
+}
+
+.compare-hero p{
+color:#6b7280;
+font-size:16px;
+}
+
+/* GRID */
+.compare-container{
+max-width:1200px;
+margin:40px auto;
+padding:20px;
+}
+
+.compare-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:30px;
+}
+
+/* CARD */
+.compare-card{
+background:white;
+padding:25px;
+border-radius:20px;
+box-shadow:0 8px 25px rgba(0,0,0,0.05);
+transition:0.3s;
+position:relative;
+}
+
+.compare-card:hover{
+transform:translateY(-6px);
+}
+
+.compare-card.best{
+border:2px solid var(--primary);
+}
+
+.best-badge{
+position:absolute;
+top:-12px;
+right:15px;
+background:var(--primary);
+color:white;
+padding:5px 12px;
+border-radius:20px;
+font-size:12px;
+font-weight:600;
+}
+
+/* INPUT */
+.compare-card label{
+font-size:13px;
+font-weight:600;
+color:#374151;
+}
+
+.compare-card input{
+width:100%;
+padding:12px;
+margin:8px 0 15px;
+border:1px solid var(--border);
+border-radius:10px;
+font-size:14px;
+}
+
+/* LIVE EMI */
+.live-emi{
+background:#f3f4f6;
+padding:12px;
+border-radius:10px;
+font-size:14px;
+margin-top:10px;
+}
+
+/* BUTTON */
+.compare-btn{
+display:block;
+margin:40px auto;
+padding:15px 40px;
+background:var(--primary);
+border:none;
+color:white;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+font-size:16px;
+box-shadow:0 10px 25px rgba(0,208,156,0.3);
+}
+
+.compare-btn:hover{
+opacity:0.9;
+}
+
+/* RESULT TABLE */
+.result-section{
+max-width:1200px;
+margin:60px auto;
+padding:20px;
+}
+
+.result-table{
+width:100%;
+border-collapse:collapse;
+background:white;
+border-radius:15px;
+overflow:hidden;
+box-shadow:0 10px 30px rgba(0,0,0,0.05);
+}
+
+.result-table th,
+.result-table td{
+padding:15px;
+text-align:center;
+border-bottom:1px solid #f3f4f6;
+}
+
+.result-table th{
+background:#f9fafb;
+font-weight:600;
+}
+
+.highlight{
+color:var(--primary);
+font-weight:700;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+.compare-hero h1{
+font-size:28px;
+}
+}
+
+.summary-wrapper{
+max-width:1200px;
+margin:70px auto;
+padding:20px;
+background:#f8fafc;
+border-radius:24px;
+}
+
+/* Header */
+.summary-header{
+display:flex;
+align-items:center;
+gap:15px;
+margin-bottom:35px;
+}
+
+.summary-header h2{
+font-size:32px;
+font-weight:800;
+color:#111827;
+}
+
+.summary-header p{
+color:#6b7280;
+font-size:15px;
+margin-top:4px;
+}
+
+/* Quick Metrics */
+.quick-metrics{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:20px;
+margin-bottom:35px;
+}
+
+.quick-card{
+background:#ffffff;
+padding:28px;
+border-radius:20px;
+box-shadow:0 15px 40px rgba(0,0,0,0.06);
+transition:0.3s ease;
+border:1px solid #f1f5f9;
+}
+
+.quick-card:hover{
+transform:translateY(-6px);
+box-shadow:0 25px 60px rgba(0,0,0,0.08);
+}
+
+.quick-card h4{
+font-size:14px;
+color:#6b7280;
+margin-bottom:10px;
+}
+
+.quick-card p{
+font-size:26px;
+font-weight:800;
+
+}
+/* Table Card */
+.table-card{
+background:#ffffff;
+border-radius:22px;
+overflow:hidden;
+box-shadow:0 20px 60px rgba(0,0,0,0.06);
+margin-bottom:50px;
+}
+
+.result-table{
+width:100%;
+border-collapse:separate;
+border-spacing:0;
+}
+
+.result-table th{
+background:#f9fafb;
+padding:20px;
+font-weight:600;
+text-align:center;
+font-size:15px;
+color:#374151;
+}
+
+.result-table td{
+padding:22px;
+text-align:center;
+font-size:15px;
+border-top:1px solid #f1f5f9;
+}
+
+.result-table tbody tr{
+transition:0.3s;
+}
+
+.result-table tbody tr:hover{
+background:#f0fdf4;
+}
+
+/* BEST ROW */
+.result-table tr.best-row{
+background:linear-gradient(90deg,#ecfdf5,#f0fdf4);
+font-weight:600;
+}
+/* Chart Card */
+.chart-card{
+background:#ffffff;
+padding:35px;
+border-radius:22px;
+box-shadow:0 20px 60px rgba(0,0,0,0.06);
+}
+
+.tenure-type{
+display:flex;
+gap:20px;
+margin-top:-8px;
+margin-bottom:15px;
+font-size:13px;
+color:#374151;
+}
+
+.tenure-type input{
+margin-right:6px;
+accent-color:#00d09c;
+cursor:pointer;
+}
+
+.tenure-type label{
+cursor:pointer;
+}
+</style>
+
+<div class="compare-hero">
+<h1>Compare Loans Smartly</h1>
+<p>Analyze EMIs, interest & total payment. Choose the best deal.</p>
+</div>
+
+<div class="compare-container">
+
+<div class="compare-grid">
+
+{% for i in range(max_loans) %}
+<div class="compare-card" data-index="{{i}}">
+<h3>Loan {{ i+1 }}</h3>
+
+<label>Loan Amount</label>
+<input type="number" class="principal" placeholder="Enter amount">
+
+<label>Interest Rate (%)</label>
+<input type="number" class="rate" step="0.01" placeholder="Annual rate">
+
+<label>Tenure</label>
+<input type="number" class="tenure" placeholder="Enter tenure">
+
+<div class="tenure-type">
+<label>
+<input type="radio" name="tenureType{{i}}" value="months" checked>
+Months
+</label>
+
+<label>
+<input type="radio" name="tenureType{{i}}" value="years">
+Years
+</label>
+</div>
+
+<div class="live-emi">
+Monthly EMI: <span class="emi-preview">₹ 0</span>
+</div>
+
+</div>
+{% endfor %}
+
+</div>
+
+<button id="compareBtn" class="compare-btn">
+Compare Loans
+</button>
+
+</div>
+
+
+<div class="result-section">
+
+<div class="summary-wrapper">
+
+<!-- Header -->
+<div class="summary-header">
+<div>
+<h2>Comparison Summary</h2>
+<p>Analyze EMI, interest burden & total repayment clearly.</p>
+</div>
+</div>
+
+<!-- Quick Metrics Row -->
+<div class="quick-metrics">
+<div class="quick-card">
+<h4>Lowest EMI</h4>
+<p id="lowestEmiMetric">--</p>
+</div>
+
+<div class="quick-card">
+<h4>Lowest Interest</h4>
+<p id="lowestInterestMetric">--</p>
+</div>
+
+<div class="quick-card">
+<h4>Lowest Payment</h4>
+<p id="lowestPaymentMetric">--</p>
+</div>
+</div>
+
+<!-- Table Card -->
+<div class="table-card">
+<table class="result-table">
+<thead>
+<tr>
+<th>Loan</th>
+<th>Monthly EMI</th>
+<th>Total Interest</th>
+<th>Total Payment</th>
+</tr>
+</thead>
+<tbody id="resultBody"></tbody>
+</table>
+</div>
+
+<!-- Chart Card -->
+<div class="chart-card">
+<canvas id="comparisonChart"></canvas>
+</div>
+
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+
+function calculateEMI(P, rate, N){
+const R = rate/12/100;
+return (P * R * Math.pow(1+R,N)) / (Math.pow(1+R,N)-1);
+}
+
+/* ================= LIVE EMI PREVIEW ================= */
+
+document.querySelectorAll(".compare-card").forEach(card=>{
+card.addEventListener("input",()=>{
+const P = parseFloat(card.querySelector(".principal").value || 0);
+const rate = parseFloat(card.querySelector(".rate").value || 0);
+let N = parseFloat(card.querySelector(".tenure").value || 0);
+
+const tenureType = card.querySelector("input[type='radio']:checked")?.value;
+
+if(tenureType === "years"){
+N = N * 12;
+}
+
+
+if(P && rate && N){
+const emi = calculateEMI(P,rate,N);
+card.querySelector(".emi-preview").innerText =
+"₹ "+emi.toFixed(2);
+}else{
+card.querySelector(".emi-preview").innerText = "₹ 0";
+}
+});
+});
+
+
+/* ================= COMPARE BUTTON ================= */
+
+document.getElementById("compareBtn").addEventListener("click", function(){
+
+const cards = document.querySelectorAll(".compare-card");
+const resultBody = document.getElementById("resultBody");
+
+resultBody.innerHTML="";
+let results=[];
+let lowestEMI=Infinity;
+let bestIndex=-1;
+
+/* ===== Collect Data ===== */
+
+cards.forEach((card,index)=>{
+
+const P=parseFloat(card.querySelector(".principal").value);
+const rate=parseFloat(card.querySelector(".rate").value);
+let N=parseFloat(card.querySelector(".tenure").value);
+
+const tenureType = card.querySelector("input[type='radio']:checked")?.value;
+
+if(tenureType === "years"){
+N = N * 12;
+}
+
+if(!P || !rate || !N) return;
+
+const emi=calculateEMI(P,rate,N);
+const totalPayment=emi*N;
+const totalInterest=totalPayment-P;
+
+results.push({
+emi: emi,
+totalInterest: totalInterest,
+totalPayment: totalPayment,
+index: index
+});
+
+if(emi<lowestEMI){
+lowestEMI=emi;
+bestIndex=index;
+}
+
+});
+
+/* ===== If no valid loans entered ===== */
+
+if(results.length === 0){
+document.getElementById("lowestEmiMetric").innerText="--";
+document.getElementById("lowestInterestMetric").innerText="--";
+document.getElementById("lowestPaymentMetric").innerText="--";
+alert("Please enter valid loan details.");
+return;
+}
+
+/* ===== Reset card styles ===== */
+
+cards.forEach(c=>{
+c.classList.remove("best");
+c.querySelector(".best-badge")?.remove();
+});
+
+/* ===== Update Metrics ===== */
+
+const lowestInterestLoan = results.reduce((min,r)=>
+r.totalInterest < min.totalInterest ? r : min
+);
+
+const lowestPaymentLoan = results.reduce((min,r)=>
+r.totalPayment < min.totalPayment ? r : min
+);
+
+document.getElementById("lowestEmiMetric").innerText =
+"₹ " + lowestEMI.toFixed(2);
+
+document.getElementById("lowestInterestMetric").innerText =
+"₹ " + lowestInterestLoan.totalInterest.toFixed(2);
+
+document.getElementById("lowestPaymentMetric").innerText =
+"₹ " + lowestPaymentLoan.totalPayment.toFixed(2);
+
+/* ===== Render Table ===== */
+
+results.forEach(r=>{
+
+if(r.index===bestIndex){
+cards[r.index].classList.add("best");
+
+const badge=document.createElement("div");
+badge.className="best-badge";
+badge.innerText="Best Option";
+cards[r.index].appendChild(badge);
+}
+
+resultBody.innerHTML+=`
+<tr class="${r.index===bestIndex?'best-row':''}">
+<td>Loan ${r.index+1}</td>
+<td class="${r.index===bestIndex?'highlight':''}">
+₹ ${r.emi.toFixed(2)}
+</td>
+<td>₹ ${r.totalInterest.toFixed(2)}</td>
+<td>₹ ${r.totalPayment.toFixed(2)}</td>
+</tr>
+`;
+
+});
+
+/* ===== Render Chart ===== */
+
+const ctx=document.getElementById("comparisonChart");
+if(window.compareChart) window.compareChart.destroy();
+
+window.compareChart=new Chart(ctx,{
+type:"bar",
+data:{
+labels:results.map(r=>"Loan "+(r.index+1)),
+datasets:[{
+label:"Monthly EMI",
+data:results.map(r=>r.emi),
+backgroundColor:"#00d09c"
+}]
+},
+options:{
+responsive:true,
+plugins:{
+legend:{display:false}
+}
+}
+});
+
+});
+
+</script>
+
+{% endblock %}

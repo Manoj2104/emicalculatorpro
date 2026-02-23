@@ -1,0 +1,240 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+body{
+background:linear-gradient(135deg,#f0f9ff,#ecfdf5);
+}
+
+.inf-wrapper{
+max-width:1000px;
+margin:100px auto;
+padding:0 40px;
+}
+
+.inf-card{
+background:rgba(255,255,255,0.95);
+backdrop-filter:blur(20px);
+padding:60px;
+border-radius:28px;
+box-shadow:0 40px 100px rgba(0,0,0,0.08);
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:60px;
+align-items:center;
+}
+
+.input-group{
+margin-bottom:25px;
+}
+
+.input-group label{
+display:block;
+margin-bottom:6px;
+font-weight:600;
+color:#374151;
+}
+
+input{
+width:220px;
+padding:10px;
+font-size:18px;
+border:1px solid #e5e7eb;
+border-radius:10px;
+}
+
+.result-box{
+text-align:center;
+}
+
+.future-value{
+font-size:48px;
+font-weight:900;
+background:linear-gradient(90deg,#3b82f6,#00d09c);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+margin-bottom:10px;
+}
+
+.stat-box{
+background:white;
+padding:18px;
+border-radius:14px;
+margin-top:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+@media(max-width:900px){
+.inf-card{
+grid-template-columns:1fr;
+}
+}
+
+/* ============================= */
+/* 📱 MOBILE (Below 600px) */
+/* ============================= */
+@media (max-width:600px){
+
+.inf-wrapper{
+margin:40px auto;
+padding:0 15px;
+}
+
+.inf-card{
+grid-template-columns:1fr;
+padding:30px;
+gap:35px;
+border-radius:20px;
+}
+
+input{
+width:100%;
+font-size:16px;
+}
+
+.future-value{
+font-size:32px;
+}
+
+.stat-box{
+flex-direction:column;
+gap:8px;
+text-align:center;
+}
+
+}
+
+
+/* ============================= */
+/* 📲 TABLET (601px – 1024px) */
+/* ============================= */
+@media (min-width:601px) and (max-width:1024px){
+
+.inf-wrapper{
+margin:70px auto;
+padding:0 25px;
+}
+
+.inf-card{
+grid-template-columns:1fr;
+padding:45px;
+gap:45px;
+}
+
+input{
+width:100%;
+}
+
+.future-value{
+font-size:40px;
+}
+
+}
+
+
+/* ============================= */
+/* 🖥 DESKTOP (1025px and above) */
+/* ============================= */
+@media (min-width:1025px){
+
+.inf-card{
+grid-template-columns:1fr 1fr;
+padding:60px;
+gap:60px;
+}
+
+.future-value{
+font-size:48px;
+}
+
+}
+</style>
+
+<div class="inf-wrapper">
+<h2>Inflation Calculator</h2>
+<p style="color:#6b7280;">See how inflation affects your money over time</p>
+
+<div class="inf-card">
+
+<!-- LEFT -->
+<div>
+
+<div class="input-group">
+<label>Current Amount (₹)</label>
+<input type="number" id="presentValue" value="100000">
+</div>
+
+<div class="input-group">
+<label>Inflation Rate (% per year)</label>
+<input type="number" id="inflationRate" value="6">
+</div>
+
+<div class="input-group">
+<label>Number of Years</label>
+<input type="number" id="years" value="10">
+</div>
+
+</div>
+
+<!-- RIGHT -->
+<div class="result-box">
+
+<div class="future-value">
+₹ <span id="futureValue"></span>
+</div>
+<div>Future Value (After Inflation)</div>
+
+<div class="stat-box">
+<span>Purchasing Power Loss</span>
+<strong id="lossPercent"></strong>
+</div>
+
+<div class="stat-box">
+<span>Total Increase Due to Inflation</span>
+<strong>₹ <span id="increaseAmount"></span></strong>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+function calculateInflation(){
+
+let present = parseFloat(document.getElementById("presentValue").value) || 0;
+let rate = parseFloat(document.getElementById("inflationRate").value) / 100 || 0;
+let years = parseFloat(document.getElementById("years").value) || 0;
+
+if(years < 0) years = 0;
+
+let future = present * Math.pow((1 + rate), years);
+let increase = future - present;
+let lossPercent = (increase / present) * 100;
+
+/* Update UI */
+document.getElementById("futureValue").innerText =
+future.toLocaleString("en-IN",{maximumFractionDigits:0});
+
+document.getElementById("increaseAmount").innerText =
+increase.toLocaleString("en-IN",{maximumFractionDigits:0});
+
+document.getElementById("lossPercent").innerText =
+lossPercent.toFixed(2) + "%";
+}
+
+document.querySelectorAll("input").forEach(input=>{
+input.addEventListener("input", calculateInflation);
+});
+
+calculateInflation();
+
+});
+</script>
+
+{% endblock %}

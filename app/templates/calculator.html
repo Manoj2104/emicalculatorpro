@@ -1,0 +1,467 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+body{background:#f5f7fb;}
+
+.calc-page{
+max-width:1100px;
+margin:60px auto;
+padding:0 20px;
+}
+
+.calc-title{
+font-size:40px;
+font-weight:800;
+margin-bottom:40px;
+}
+
+.calc-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:40px;
+}
+
+.card{
+background:#fff;
+padding:35px;
+border-radius:20px;
+box-shadow:0 15px 40px rgba(0,0,0,0.05);
+}
+
+.form-group{margin-bottom:20px;}
+
+.form-group label{
+display:block;
+margin-bottom:6px;
+font-weight:600;
+font-size:14px;
+}
+
+.form-group input, select{
+width:100%;
+padding:12px;
+border:1px solid #e5e7eb;
+border-radius:10px;
+font-size:14px;
+}
+
+.calculate-btn{
+width:100%;
+padding:14px;
+background:#10b981;
+border:none;
+color:white;
+border-radius:12px;
+font-weight:600;
+cursor:pointer;
+margin-top:10px;
+transition:0.3s;
+}
+
+.calculate-btn:hover{
+background:#059669;
+}
+
+.result-item{
+display:flex;
+justify-content:space-between;
+margin-bottom:18px;
+font-size:15px;
+}
+
+.result-item strong{font-size:18px;}
+
+@media(max-width:900px){
+.calc-grid{grid-template-columns:1fr;}
+}
+
+/* ===============================
+   SCHEDULE SECTION
+================================ */
+
+.schedule-toggle-wrapper{
+text-align:center;
+margin-top:60px;
+}
+
+.schedule-toggle-btn{
+padding:14px 30px;
+background:#111827;
+color:white;
+border:none;
+border-radius:12px;
+cursor:pointer;
+font-weight:600;
+transition:0.3s ease;
+}
+
+.schedule-toggle-btn:hover{
+background:#000;
+}
+
+.schedule-card{
+display:none;
+margin-top:30px;
+background:#ffffff;
+padding:30px;
+border-radius:20px;
+box-shadow:0 15px 40px rgba(0,0,0,0.05);
+}
+
+.schedule-title{
+font-size:22px;
+font-weight:700;
+margin-bottom:20px;
+}
+
+/* SEARCH + ACTION BAR */
+.schedule-top-bar{
+display:flex;
+justify-content:space-between;
+flex-wrap:wrap;
+gap:10px;
+margin-bottom:15px;
+}
+
+.schedule-search{
+flex:1;
+min-width:200px;
+padding:10px;
+border:1px solid #ddd;
+border-radius:8px;
+}
+
+.schedule-actions button{
+padding:10px 16px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+font-size:13px;
+margin-left:8px;
+}
+
+.excel-btn{
+background:#2563eb;
+color:white;
+}
+
+.share-btn{
+background:#10b981;
+color:white;
+}
+
+/* TABLE */
+.schedule-table-wrapper{
+max-height:400px;
+overflow-y:auto;
+overflow-x:auto;
+}
+
+#scheduleTable{
+width:100%;
+border-collapse:collapse;
+min-width:900px;
+}
+
+#scheduleTable th{
+position:sticky;
+top:0;
+background:#f3f4f6;
+padding:14px;
+text-align:left;
+font-size:14px;
+font-weight:600;
+z-index:2;
+}
+
+#scheduleTable td{
+padding:14px;
+border-bottom:1px solid #f1f1f1;
+font-size:14px;
+}
+
+#scheduleTable tbody tr:nth-child(even){
+background:#fafafa;
+}
+
+#scheduleTable tbody tr:hover{
+background:#f1f5f9;
+transform:scale(1.01);
+transition:0.2s ease;
+}
+
+
+/* =========================================
+   📱 MOBILE (0px – 575px)
+========================================= */
+@media (max-width:575px){
+
+.calc-page{
+margin:30px auto;
+padding:0 14px;
+}
+
+.calc-title{
+font-size:24px;
+margin-bottom:20px;
+text-align:center;
+}
+
+.calc-grid{
+grid-template-columns:1fr;
+gap:20px;
+}
+
+.card{
+padding:20px;
+border-radius:16px;
+}
+
+.form-group input,
+.form-group select{
+padding:10px;
+font-size:13px;
+}
+
+.calculate-btn{
+padding:12px;
+font-size:14px;
+}
+
+.result-item{
+font-size:13px;
+}
+
+.result-item strong{
+font-size:15px;
+}
+
+canvas{
+max-height:250px;
+}
+
+}
+
+/* =========================================
+   📲 TABLET (576px – 991px)
+========================================= */
+@media (min-width:576px) and (max-width:991px){
+
+.calc-page{
+margin:40px auto;
+padding:0 20px;
+}
+
+.calc-title{
+font-size:30px;
+margin-bottom:30px;
+}
+
+.calc-grid{
+grid-template-columns:1fr;
+gap:30px;
+}
+
+.card{
+padding:25px;
+}
+
+canvas{
+max-height:300px;
+}
+
+}
+
+/* =========================================
+   💻 SMALL LAPTOP (992px – 1199px)
+========================================= */
+@media (min-width:992px) and (max-width:1199px){
+
+.calc-page{
+max-width:1000px;
+}
+
+.calc-title{
+font-size:34px;
+}
+
+.calc-grid{
+grid-template-columns:1fr 1fr;
+gap:30px;
+}
+
+}
+
+/* =========================================
+   🖥 LARGE DESKTOP (1200px+)
+========================================= */
+@media (min-width:1200px){
+
+.calc-page{
+max-width:1100px;
+}
+
+.calc-title{
+font-size:40px;
+}
+
+.calc-grid{
+grid-template-columns:1fr 1fr;
+gap:40px;
+}
+
+}
+
+@media(max-width:768px){
+
+.schedule-table-wrapper{
+overflow-x:auto;
+}
+
+#scheduleTable{
+min-width:600px;
+font-size:13px;
+}
+
+#scheduleTable th{
+font-size:13px;
+}
+
+#scheduleTable td{
+font-size:13px;
+white-space:nowrap;
+}
+
+}
+
+
+
+</style>
+
+<div class="calc-page">
+
+<h1 class="calc-title">Loan EMI Calculator</h1>
+
+<div class="calc-grid">
+
+<!-- INPUT -->
+<div class="card">
+
+<div class="form-group">
+<label>Loan Amount</label>
+<input type="number" id="principal" value="1000000">
+</div>
+
+<div class="form-group">
+<label>Annual Interest Rate (%)</label>
+<input type="number" id="rate" value="8.5" step="0.01">
+</div>
+
+<div class="form-group">
+<label>Loan Tenure</label>
+<input type="number" id="tenure" value="5">
+</div>
+
+<div class="form-group">
+<label>Tenure Type</label>
+<select id="tenureType">
+<option value="years">Years</option>
+<option value="months">Months</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Repayment Start Date</label>
+<input type="date" id="startDate">
+</div>
+
+<button id="calculateBtn" class="calculate-btn">
+Calculate EMI
+</button>
+
+</div>
+
+<!-- RESULT -->
+<div class="card">
+
+<div class="result-item">
+<span>Monthly EMI</span>
+<strong id="emiValue">--</strong>
+</div>
+
+<div class="result-item">
+<span>Total Interest</span>
+<strong id="interestValue">--</strong>
+</div>
+
+<div class="result-item">
+<span>Total Payment</span>
+<strong id="totalValue">--</strong>
+</div>
+
+<div class="result-item">
+<span>Repayment Start Date</span>
+<strong id="displayStartDate">--</strong>
+</div>
+
+<div class="result-item">
+<span>Loan End Date</span>
+<strong id="endDate">--</strong>
+</div>
+
+<canvas id="emiChart" style="margin-top:30px;"></canvas>
+
+</div>
+
+</div>
+
+<!-- TOGGLE -->
+<div class="schedule-toggle-wrapper">
+<button id="toggleScheduleBtn" class="schedule-toggle-btn">
+View Repayment Schedule
+</button>
+</div>
+
+<!-- SCHEDULE -->
+<div id="scheduleSection" class="schedule-card">
+
+<h2 class="schedule-title">Repayment Schedule</h2>
+
+<div class="schedule-top-bar">
+
+<input type="text" id="scheduleSearch"
+class="schedule-search"
+placeholder="Search month or date...">
+
+<div class="schedule-actions">
+<button class="excel-btn" id="downloadExcel">Download Excel</button>
+<button class="share-btn" id="shareBtn">Share</button>
+</div>
+
+</div>
+
+<div class="schedule-table-wrapper">
+<table id="scheduleTable">
+<thead>
+<tr>
+<th>Month</th>
+<th>Date</th>
+<th>EMI</th>
+<th>Principal</th>
+<th>Interest</th>
+<th>Balance</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+</div>
+
+</div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="{{ url_for('static', filename='js/calculator.js') }}"></script>
+
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<section class="auth-wrapper">
+
+    <div class="auth-card">
+
+        <h2>Create Your Account</h2>
+        <p>Sign up to save EMI calculations and download reports.</p>
+
+        <form method="POST">
+
+            <label>Email Address</label>
+            <input type="email" name="email" required>
+
+            <label>Password</label>
+            <input type="password" name="password" minlength="6" required>
+
+            <button type="submit" class="primary-btn">
+                Register
+            </button>
+
+        </form>
+
+        <div class="auth-footer">
+            <p>Already have an account?</p>
+            <a href="{{ url_for('auth.login') }}">Login Here</a>
+        </div>
+
+    </div>
+
+</section>
+
+{% endblock %}

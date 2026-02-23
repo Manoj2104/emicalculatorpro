@@ -1,0 +1,564 @@
+/* ==========================================
+   FINTECH DESIGN SYSTEM
+========================================== */
+
+:root {
+    --primary: #1D4ED8;
+    --secondary: #0F172A;
+    --accent: #16A34A;
+    --light-bg: #F8FAFC;
+    --dark-bg: #020617;
+    --card-bg: #FFFFFF;
+    --text-dark: #0F172A;
+    --text-light: #E2E8F0;
+    --border-color: #E5E7EB;
+}
+
+/* ==========================================
+   RESET
+========================================== */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    background: var(--light-bg);
+    color: var(--text-dark);
+    line-height: 1.6;
+}
+
+/* ==========================================
+   CONTAINER
+========================================== */
+
+.container {
+    width: 95%;
+    max-width: 1200px;
+    margin: auto;
+}
+
+/* ==========================================
+   HEADER
+========================================== */
+
+.header {
+    background: var(--secondary);
+    color: white;
+    padding: 1rem 0;
+}
+
+.header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.4rem;
+    font-weight: bold;
+}
+
+.nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 1rem;
+    font-size: 0.95rem;
+}
+
+.nav a:hover {
+    text-decoration: underline;
+}
+
+#darkToggle {
+    background: transparent;
+    border: none;
+    font-size: 1.2rem;
+    cursor: pointer;
+    color: white;
+}
+
+/* ==========================================
+   MAIN LAYOUT
+========================================== */
+
+.main-content {
+    padding: 2rem 0;
+}
+
+/* ==========================================
+   CALCULATOR GRID
+========================================== */
+
+.calculator-wrapper {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 2rem;
+}
+
+@media (min-width: 900px) {
+    .calculator-wrapper {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+/* ==========================================
+   CARD DESIGN
+========================================== */
+
+.calculator-card,
+.result-card {
+    background: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+}
+
+/* ==========================================
+   FORM ELEMENTS
+========================================== */
+
+label {
+    display: block;
+    margin-top: 1rem;
+    font-weight: 500;
+}
+
+input, select {
+    width: 100%;
+    padding: 0.6rem;
+    margin-top: 0.4rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+/* ==========================================
+   BUTTONS
+========================================== */
+
+.primary-btn {
+    margin-top: 1.5rem;
+    width: 100%;
+    padding: 0.8rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+.primary-btn:hover {
+    background: #1E40AF;
+}
+
+.secondary-btn {
+    margin-top: 1rem;
+    width: 100%;
+    padding: 0.7rem;
+    background: var(--accent);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+/* ==========================================
+   RESULT ITEMS
+========================================== */
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 0.8rem;
+    font-size: 1rem;
+}
+
+.result-item strong {
+    color: var(--primary);
+}
+
+/* ==========================================
+   CHART SECTION
+========================================== */
+
+.chart-section {
+    margin-top: 3rem;
+}
+
+/* ==========================================
+   TABLE
+========================================== */
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+th, td {
+    padding: 0.6rem;
+    border-bottom: 1px solid var(--border-color);
+    text-align: left;
+    font-size: 0.9rem;
+}
+
+th {
+    background: var(--light-bg);
+    font-weight: 600;
+}
+
+/* ==========================================
+   STICKY EMI BAR (Mobile)
+========================================== */
+
+.sticky-emi-bar {
+    display: none;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: var(--primary);
+    color: white;
+    padding: 1rem;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* ==========================================
+   ADS
+========================================== */
+
+.ad-top,
+.ad-middle {
+    margin: 2rem 0;
+    text-align: center;
+}
+
+/* ==========================================
+   FOOTER
+========================================== */
+
+.footer {
+    background: var(--secondary);
+    color: white;
+    padding: 1rem 0;
+    margin-top: 3rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+/* ==========================================
+   DARK MODE
+========================================== */
+
+body.dark-mode {
+    background: var(--dark-bg);
+    color: var(--text-light);
+}
+
+body.dark-mode .calculator-card,
+body.dark-mode .result-card {
+    background: #0F172A;
+    color: var(--text-light);
+}
+
+body.dark-mode th {
+    background: #1E293B;
+}
+
+body.dark-mode input,
+body.dark-mode select {
+    background: #1E293B;
+    color: white;
+    border: 1px solid #334155;
+}
+
+.hero {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 80px 8%;
+  background: #F9FAFB;
+}
+
+.hero-content {
+  max-width: 600px;
+}
+
+.hero h1 {
+  font-size: 64px;
+  font-weight: 700;
+  color: #0F172A;
+  line-height: 1.1;
+}
+
+.hero p {
+  margin-top: 20px;
+  font-size: 18px;
+  color: #6B7280;
+}
+
+.hero-actions {
+  margin-top: 30px;
+  display: flex;
+  gap: 20px;
+}
+
+.btn-primary {
+  background: #10B981;
+  color: white;
+  padding: 14px 28px;
+  border-radius: 12px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #059669;
+  transform: translateY(-2px);
+}
+
+.btn-outline {
+  border: 2px solid #10B981;
+  color: #10B981;
+  padding: 14px 28px;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline:hover {
+  background: #10B981;
+  color: white;
+}
+
+.hero-visual img {
+  max-width: 600px;
+}
+
+@media (max-width: 992px) {
+  .hero {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-visual {
+    margin-top: 40px;
+  }
+
+  .hero h1 {
+    font-size: 42px;
+  }
+}
+
+.calculator-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 40px;
+    padding: 80px 0;
+}
+
+.calculator-card,
+.result-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 20px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.05);
+}
+
+.calculator-card input {
+    width: 100%;
+    margin-bottom: 20px;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid #e5e7eb;
+}
+
+.primary-btn {
+    background: #10b981;
+    color: white;
+    padding: 12px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    width: 100%;
+}
+
+.result-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.chart-section,
+.amortization-section {
+    padding: 60px 0;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 10px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.sticky-emi-bar {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    background: #10b981;
+    color: white;
+    padding: 12px;
+    text-align: center;
+    display: none;
+}
+
+@media(max-width:900px){
+    .calculator-wrapper {
+        grid-template-columns: 1fr;
+    }
+    .sticky-emi-bar {
+        display: block;
+    }
+}
+
+/* ===============================
+   TOGGLE BUTTON
+================================ */
+
+.schedule-toggle-wrapper{
+    text-align:center;
+    margin-top:60px;
+}
+
+.schedule-toggle-btn{
+    padding:14px 30px;
+    background:#111827;
+    color:white;
+    border:none;
+    border-radius:12px;
+    cursor:pointer;
+    font-weight:600;
+    transition:0.3s ease;
+}
+
+.schedule-toggle-btn:hover{
+    background:#000;
+}
+
+/* ===============================
+   SCHEDULE CARD
+================================ */
+
+.schedule-card{
+    display:none;
+    margin-top:30px;
+    background:#ffffff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 15px 40px rgba(0,0,0,0.05);
+}
+
+.schedule-title{
+    font-size:22px;
+    font-weight:700;
+    margin-bottom:20px;
+}
+
+/* ===============================
+   TABLE STYLING
+================================ */
+
+.schedule-table-wrapper{
+    overflow-x:auto;
+}
+
+#scheduleTable{
+    width:100%;
+    border-collapse:collapse;
+    min-width:900px;
+}
+
+#scheduleTable th{
+    background:#f3f4f6;
+    padding:14px;
+    text-align:left;
+    font-size:14px;
+    font-weight:600;
+}
+
+#scheduleTable td{
+    padding:14px;
+    border-bottom:1px solid #f1f1f1;
+    font-size:14px;
+}
+
+#scheduleTable tbody tr:nth-child(even){
+    background:#fafafa;
+}
+
+#scheduleTable tbody tr:hover{
+    background:#f1f5f9;
+}
+
+/* ===============================
+   MOBILE RESPONSIVE
+================================ */
+
+@media(max-width:768px){
+
+    #scheduleTable thead{
+        display:none;
+    }
+
+    #scheduleTable,
+    #scheduleTable tbody,
+    #scheduleTable tr,
+    #scheduleTable td{
+        display:block;
+        width:100%;
+    }
+
+    #scheduleTable tr{
+        margin-bottom:15px;
+        background:#f9fafb;
+        padding:15px;
+        border-radius:14px;
+    }
+
+    #scheduleTable td{
+        border:none;
+        padding:6px 0;
+    }
+
+    #scheduleTable td::before{
+        content:attr(data-label);
+        font-weight:600;
+        display:block;
+        margin-bottom:4px;
+        color:#374151;
+    }
+}

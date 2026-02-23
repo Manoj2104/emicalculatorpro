@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+
+.salary-container{
+max-width:1100px;
+margin:60px auto;
+padding:20px;
+}
+
+/* CARD */
+.salary-card{
+background:#ffffff;
+padding:40px;
+border-radius:24px;
+box-shadow:0 20px 60px rgba(0,0,0,0.06);
+transition:0.3s ease;
+}
+
+/* GRID DEFAULT (DESKTOP) */
+.salary-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+}
+
+/* INPUTS */
+.salary-card label{
+font-weight:600;
+font-size:14px;
+color:#374151;
+}
+
+.salary-card input{
+width:100%;
+padding:14px;
+margin-top:6px;
+margin-bottom:18px;
+border:1px solid #e5e7eb;
+border-radius:12px;
+font-size:15px;
+transition:0.2s;
+}
+
+.salary-card input:focus{
+outline:none;
+border-color:#00d09c;
+box-shadow:0 0 0 3px rgba(0,208,156,0.15);
+}
+
+/* BUTTON */
+.salary-card button{
+width:100%;
+background:#00d09c;
+color:white;
+border:none;
+padding:16px;
+border-radius:12px;
+font-weight:600;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
+}
+
+.salary-card button:hover{
+background:#00b388;
+transform:translateY(-2px);
+}
+
+/* RESULT BOX */
+.result-box{
+margin-top:30px;
+background:#f0fdf4;
+padding:25px;
+border-radius:18px;
+display:none;
+font-weight:500;
+}
+
+/* ===================================== */
+/* 📱 MOBILE (Below 600px) */
+/* ===================================== */
+
+@media (max-width:600px){
+
+.salary-container{
+margin:30px auto;
+padding:15px;
+}
+
+.salary-card{
+padding:25px;
+border-radius:18px;
+}
+
+.salary-grid{
+grid-template-columns:1fr; /* Stack fields */
+gap:15px;
+}
+
+.salary-card button{
+font-size:15px;
+padding:14px;
+}
+
+.result-box{
+padding:18px;
+font-size:14px;
+}
+
+}
+
+/* ===================================== */
+/* 📲 TABLET (600px - 1024px) */
+/* ===================================== */
+
+@media (min-width:601px) and (max-width:1024px){
+
+.salary-grid{
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.salary-card{
+padding:35px;
+}
+
+}
+
+/* ===================================== */
+/* 🖥 LARGE DESKTOP (Above 1200px) */
+/* ===================================== */
+
+@media (min-width:1200px){
+
+.salary-container{
+max-width:1200px;
+}
+
+.salary-card{
+padding:50px;
+}
+
+}
+
+</style>
+
+<div class="salary-container">
+
+<h2>💼 Loan Eligibility by Salary</h2>
+<p>Find how much loan you can get based on your monthly salary.</p>
+
+<div class="salary-card">
+
+<div class="salary-grid">
+
+<div>
+<label>Monthly Salary (₹)</label>
+<input type="number" id="salary">
+
+<label>Existing EMI (₹)</label>
+<input type="number" id="existingEmi">
+</div>
+
+<div>
+<label>Interest Rate (%)</label>
+<input type="number" id="interestRate">
+
+<label>Tenure (Years)</label>
+<input type="number" id="tenureYears">
+</div>
+
+</div>
+
+<button onclick="calculateSalaryEligibility()">Check Eligibility</button>
+
+<div class="result-box" id="resultBox">
+<p id="loanResult"></p>
+<p id="emiResult"></p>
+<p id="riskResult"></p>
+</div>
+
+</div>
+</div>
+
+<script>
+
+function calculateSalaryEligibility(){
+
+const salary = parseFloat(document.getElementById("salary").value);
+const existingEmi = parseFloat(document.getElementById("existingEmi").value) || 0;
+const rate = parseFloat(document.getElementById("interestRate").value);
+const tenureYears = parseFloat(document.getElementById("tenureYears").value);
+
+const resultBox = document.getElementById("resultBox");
+const loanResult = document.getElementById("loanResult");
+const emiResult = document.getElementById("emiResult");
+const riskResult = document.getElementById("riskResult");
+
+loanResult.innerHTML="";
+emiResult.innerHTML="";
+riskResult.innerHTML="";
+resultBox.style.display="none";
+
+if(!salary || !rate || !tenureYears){
+alert("Fill required fields");
+return;
+}
+
+if(salary > 10000000){
+alert("Enter realistic monthly salary.");
+return;
+}
+
+const FOIR = 0.5;
+const allowedEmi = salary * FOIR;
+const eligibleEmi = allowedEmi - existingEmi;
+
+resultBox.style.display="block";
+
+if(eligibleEmi <= 0){
+loanResult.innerHTML =
+"❌ Not eligible for additional loan.";
+emiResult.innerHTML =
+"Reduce existing EMI below ₹ " + allowedEmi.toLocaleString("en-IN");
+return;
+}
+
+const R = rate/12/100;
+const N = tenureYears * 12;
+
+const loanAmount =
+eligibleEmi *
+((Math.pow(1+R,N)-1) / (R*Math.pow(1+R,N)));
+
+loanResult.innerHTML =
+"Maximum Loan Eligible: ₹ " + loanAmount.toLocaleString("en-IN");
+
+emiResult.innerHTML =
+"Maximum EMI Allowed: ₹ " + eligibleEmi.toLocaleString("en-IN");
+
+const emiLoadPercent = (existingEmi/salary)*100;
+
+if(emiLoadPercent < 30)
+riskResult.innerHTML = "🟢 Low Risk";
+else if(emiLoadPercent < 50)
+riskResult.innerHTML = "🟡 Moderate Risk";
+else
+riskResult.innerHTML = "🔴 High Risk";
+
+}
+
+</script>
+
+{% endblock %}

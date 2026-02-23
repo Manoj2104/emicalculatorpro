@@ -1,0 +1,330 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.lump-wrapper{
+max-width:1100px;
+margin:80px auto;
+padding:0 30px;
+}
+
+.lump-card{
+background:white;
+padding:60px;
+border-radius:24px;
+box-shadow:0 30px 80px rgba(0,0,0,0.06);
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:60px;
+align-items:center;
+}
+
+.input-group{
+margin-bottom:35px;
+}
+
+.input-group label{
+font-size:14px;
+color:#6b7280;
+display:block;
+margin-bottom:8px;
+}
+
+input[type=number]{
+width:200px;
+padding:10px;
+font-size:20px;
+font-weight:600;
+border:1px solid #e5e7eb;
+border-radius:8px;
+margin-bottom:12px;
+}
+
+input[type=range]{
+width:100%;
+height:6px;
+background:#e5e7eb;
+border-radius:10px;
+appearance:none;
+}
+
+input[type=range]::-webkit-slider-thumb{
+appearance:none;
+height:18px;
+width:18px;
+background:#00d09c;
+border-radius:50%;
+cursor:pointer;
+}
+
+.result-box{
+text-align:center;
+}
+
+.future-value{
+font-size:48px;
+font-weight:800;
+color:#00d09c;
+margin-bottom:10px;
+}
+
+.chart-container{
+width:280px;
+height:280px;
+margin:20px auto;
+}
+
+canvas{
+width:100% !important;
+height:100% !important;
+}
+
+/* ===================================== */
+/* 📱 MOBILE (Below 600px) */
+/* ===================================== */
+
+@media(max-width:600px){
+
+.lump-wrapper{
+margin:40px auto 80px;
+padding:0 15px;
+}
+
+.lump-wrapper h2{
+font-size:22px;
+}
+
+.lump-card{
+grid-template-columns:1fr;
+padding:30px;
+gap:35px;
+border-radius:18px;
+}
+
+input[type=number]{
+max-width:100%;
+font-size:16px;
+}
+
+.future-value{
+font-size:32px;
+}
+
+.chart-container{
+width:230px;
+height:230px;
+}
+
+}
+
+/* ===================================== */
+/* 📲 TABLET (601px – 1024px) */
+/* ===================================== */
+
+@media(min-width:601px) and (max-width:1024px){
+
+.lump-wrapper{
+margin:60px auto 100px;
+padding:0 25px;
+}
+
+.lump-card{
+grid-template-columns:1fr;
+padding:45px;
+gap:45px;
+}
+
+.future-value{
+font-size:40px;
+}
+
+.chart-container{
+width:260px;
+height:260px;
+}
+
+}
+
+/* ===================================== */
+/* 🖥 DESKTOP (1025px – 1440px) */
+/* ===================================== */
+
+@media(min-width:1025px) and (max-width:1440px){
+
+.lump-card{
+padding:60px;
+gap:60px;
+}
+
+}
+
+/* ===================================== */
+/* 🖥 LARGE DESKTOP (Above 1440px) */
+/* ===================================== */
+
+@media(min-width:1441px){
+
+.lump-wrapper{
+max-width:1350px;
+}
+
+.lump-card{
+padding:75px;
+gap:80px;
+}
+
+.future-value{
+font-size:60px;
+}
+
+.chart-container{
+width:360px;
+height:360px;
+}
+
+}
+</style>
+
+<div class="lump-wrapper">
+<h2>Lumpsum Investment Calculator</h2>
+
+<div class="lump-card">
+
+<!-- LEFT -->
+<div>
+
+<div class="input-group">
+<label>Investment Amount</label>
+<input type="number" id="amountBox" value="100000" min="1000" max="50000000">
+<input type="range" id="amount" min="1000" max="50000000" step="1000" value="100000">
+</div>
+
+<div class="input-group">
+<label>Expected Return Rate (p.a %)</label>
+<input type="number" id="rateBox" value="12" min="1" max="30">
+<input type="range" id="rate" min="1" max="30" value="12">
+</div>
+
+<div class="input-group">
+<label>Time Period (Years)</label>
+<input type="number" id="yearsBox" value="10" min="1" max="40">
+<input type="range" id="years" min="1" max="40" value="10">
+</div>
+
+</div>
+
+<!-- RIGHT -->
+<div class="result-box">
+
+<div class="future-value">
+₹ <span id="futureValue"></span>
+</div>
+<div>Estimated Returns</div>
+
+<div class="chart-container">
+<canvas id="lumpChart"></canvas>
+</div>
+
+<p><strong>Total Invested:</strong> ₹ <span id="investedVal"></span></p>
+<p><strong>Estimated Gains:</strong> ₹ <span id="gainsVal"></span></p>
+
+</div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+const amountSlider = document.getElementById("amount");
+const rateSlider = document.getElementById("rate");
+const yearsSlider = document.getElementById("years");
+
+const amountBox = document.getElementById("amountBox");
+const rateBox = document.getElementById("rateBox");
+const yearsBox = document.getElementById("yearsBox");
+
+const ctx = document.getElementById("lumpChart").getContext("2d");
+
+let lumpChart;
+
+function calculateLumpsum(){
+
+let P = parseFloat(amountBox.value) || 0;
+let r = parseFloat(rateBox.value) / 100 || 0;
+let t = parseFloat(yearsBox.value) || 0;
+
+/* Clamp */
+if(P < 1000) P = 1000;
+if(P > 50000000) P = 50000000;
+if(r < 0.01) r = 0.01;
+if(r > 0.30) r = 0.30;
+if(t < 1) t = 1;
+if(t > 40) t = 40;
+
+amountBox.value = P;
+rateBox.value = r * 100;
+yearsBox.value = t;
+
+amountSlider.value = P;
+rateSlider.value = r * 100;
+yearsSlider.value = t;
+
+/* Formula: A = P(1+r)^t */
+let futureValue = P * Math.pow((1 + r), t);
+let gains = futureValue - P;
+
+document.getElementById("futureValue").innerText =
+futureValue.toLocaleString("en-IN",{maximumFractionDigits:0});
+
+document.getElementById("investedVal").innerText =
+P.toLocaleString("en-IN");
+
+document.getElementById("gainsVal").innerText =
+gains.toLocaleString("en-IN",{maximumFractionDigits:0});
+
+renderChart(P,gains);
+}
+
+function renderChart(invested,gains){
+
+if(lumpChart) lumpChart.destroy();
+
+lumpChart = new Chart(ctx,{
+type:"doughnut",
+data:{
+labels:["Invested","Gains"],
+datasets:[{
+data:[invested,gains],
+backgroundColor:["#00d09c","#3b82f6"],
+borderWidth:0
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+cutout:"70%",
+plugins:{
+legend:{ position:"bottom" }
+}
+}
+});
+}
+
+/* Sync */
+amountSlider.addEventListener("input",()=>{amountBox.value=amountSlider.value;calculateLumpsum();});
+rateSlider.addEventListener("input",()=>{rateBox.value=rateSlider.value;calculateLumpsum();});
+yearsSlider.addEventListener("input",()=>{yearsBox.value=yearsSlider.value;calculateLumpsum();});
+
+amountBox.addEventListener("input",()=>{amountSlider.value=amountBox.value;calculateLumpsum();});
+rateBox.addEventListener("input",()=>{rateSlider.value=rateBox.value;calculateLumpsum();});
+yearsBox.addEventListener("input",()=>{yearsSlider.value=yearsBox.value;calculateLumpsum();});
+
+calculateLumpsum();
+
+});
+</script>
+
+{% endblock %}

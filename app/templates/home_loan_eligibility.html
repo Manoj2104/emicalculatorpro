@@ -1,0 +1,174 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.eligibility-container{
+max-width:1000px;
+margin:60px auto;
+padding:20px;
+}
+
+.eligibility-card{
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 15px 40px rgba(0,0,0,0.05);
+}
+
+.eligibility-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+}
+
+input{
+width:100%;
+padding:12px;
+border:1px solid #e5e7eb;
+border-radius:10px;
+margin-bottom:15px;
+}
+
+button{
+background:#00d09c;
+color:white;
+border:none;
+padding:14px 30px;
+border-radius:10px;
+font-weight:600;
+cursor:pointer;
+}
+
+.result-box{
+margin-top:30px;
+background:#f0fdf4;
+padding:20px;
+border-radius:15px;
+}
+
+@media(max-width:768px){
+.eligibility-grid{
+grid-template-columns:1fr;
+}
+}
+</style>
+
+<div class="eligibility-container">
+
+<h2>🏠 Home Loan Eligibility Calculator</h2>
+<p>Check how much home loan you can get instantly.</p>
+
+<div class="eligibility-card">
+
+<div class="eligibility-grid">
+
+<div>
+<label>Monthly Income (₹)</label>
+<input type="number" id="income" placeholder="Enter monthly income">
+
+<label>Existing EMIs (₹)</label>
+<input type="number" id="existingEmi" placeholder="Enter existing EMIs">
+</div>
+
+<div>
+<label>Interest Rate (%)</label>
+<input type="number" id="interestRate" placeholder="Annual interest rate">
+
+<label>Tenure (Years)</label>
+<input type="number" id="tenureYears" placeholder="Loan tenure in years">
+</div>
+
+</div>
+
+<button onclick="calculateEligibility()">Check Eligibility</button>
+
+<div class="result-box" id="resultBox" style="display:none;">
+<h3>Eligibility Result</h3>
+<p id="eligibleLoan"></p>
+<p id="eligibleEmi"></p>
+</div>
+
+</div>
+</div>
+
+<script>
+function calculateEligibility(){
+
+const income = parseFloat(document.getElementById("income").value);
+const existingEmi = parseFloat(document.getElementById("existingEmi").value) || 0;
+const rate = parseFloat(document.getElementById("interestRate").value);
+const tenureYears = parseFloat(document.getElementById("tenureYears").value);
+const resultBox = document.getElementById("resultBox");
+const eligibleLoanText = document.getElementById("eligibleLoan");
+const eligibleEmiText = document.getElementById("eligibleEmi");
+
+eligibleLoanText.innerText="";
+eligibleEmiText.innerText="";
+resultBox.style.display="none";
+
+if(!income || !rate || !tenureYears){
+alert("Fill required fields");
+return;
+}
+
+const FOIR = 0.5;
+const allowedEmi = income * FOIR;
+const eligibleEmi = allowedEmi - existingEmi;
+
+resultBox.style.display="block";
+
+/* ================= SCORE CALCULATION ================= */
+
+const emiLoadPercent = (existingEmi / income) * 100;
+let score = 100 - emiLoadPercent;
+if(score < 0) score = 0;
+
+let riskLabel = "";
+if(score >= 75) riskLabel = "🟢 Excellent";
+else if(score >= 50) riskLabel = "🟡 Moderate";
+else riskLabel = "🔴 High Risk";
+
+/* ================= NOT ELIGIBLE ================= */
+
+if(eligibleEmi <= 0){
+
+eligibleLoanText.innerText =
+"❌ No additional loan capacity available.";
+
+eligibleEmiText.innerText =
+"You must reduce EMI below ₹ " + allowedEmi.toFixed(0) +
+" to qualify.";
+
+eligibleEmiText.innerHTML += 
+"<br><br>Eligibility Score: " + score.toFixed(0) + "/100 (" + riskLabel + ")";
+
+return;
+}
+
+/* ================= ELIGIBLE ================= */
+
+const R = rate/12/100;
+const N = tenureYears * 12;
+
+const loanAmount =
+eligibleEmi *
+((Math.pow(1+R,N)-1) / (R*Math.pow(1+R,N)));
+
+eligibleLoanText.innerText =
+"Maximum Eligible Loan Amount: ₹ " + loanAmount.toFixed(0);
+
+eligibleEmiText.innerHTML =
+"Maximum EMI You Can Pay: ₹ " + eligibleEmi.toFixed(0) +
+"<br><br>Eligibility Score: " + score.toFixed(0) +
+"/100 (" + riskLabel + ")";
+
+/* ================= SMART SUGGESTION ================= */
+
+if(score < 50){
+eligibleEmiText.innerHTML +=
+"<br><br>💡 Suggestion: Reduce EMI or increase income to improve eligibility.";
+}
+
+}</script>
+
+{% endblock %}

@@ -1,0 +1,247 @@
+{% extends "base.html" %}
+
+{% block content %}
+<style>
+
+    /* ================================
+   PREPAYMENT WRAPPER
+================================ */
+
+.prepayment-wrapper {
+    max-width: 1100px;
+    margin: 80px auto;
+    padding: 20px;
+}
+
+.prepayment-wrapper h2 {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.prepayment-wrapper p {
+    color: #6b7280;
+    margin-bottom: 30px;
+}
+
+/* ================================
+   CARD DESIGN
+================================ */
+
+.calculator-card {
+    background: #ffffff;
+    padding: 40px;
+    border-radius: 16px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.calculator-card h4 {
+    grid-column: span 2;
+    margin-top: 20px;
+}
+
+.calculator-card hr {
+    grid-column: span 2;
+    border: none;
+    border-top: 1px solid #eee;
+    margin: 10px 0;
+}
+
+.calculator-card label {
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.calculator-card input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #ddd;
+    font-size: 15px;
+}
+
+.primary-btn {
+    grid-column: span 2;
+    padding: 14px;
+    border-radius: 12px;
+    border: none;
+    background: #00d09c;
+    color: white;
+    font-weight: 600;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.3s ease;
+}
+
+.primary-btn:hover {
+    background: #00b487;
+}
+
+/* ================================
+   RESULT SECTION
+================================ */
+
+.prepayment-result-section {
+    max-width: 1100px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.result-card {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.result-item {
+    background: white;
+    padding: 25px;
+    border-radius: 16px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    text-align: center;
+}
+
+.result-item span {
+    display: block;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.result-item strong {
+    font-size: 22px;
+    font-weight: 700;
+    margin-top: 8px;
+    display: block;
+}
+
+/* =========================================
+   📱 MOBILE VIEW (Below 768px)
+========================================= */
+
+@media (max-width: 768px) {
+
+    .calculator-card {
+        grid-template-columns: 1fr;
+        padding: 25px;
+    }
+
+    .calculator-card h4,
+    .calculator-card hr,
+    .primary-btn {
+        grid-column: span 1;
+    }
+
+    .result-card {
+        grid-template-columns: 1fr;
+    }
+
+    .prepayment-wrapper h2 {
+        font-size: 24px;
+    }
+
+}
+
+/* =========================================
+   📱 TABLET VIEW (768px - 1024px)
+========================================= */
+
+@media (min-width: 769px) and (max-width: 1024px) {
+
+    .calculator-card {
+        grid-template-columns: 1fr 1fr;
+        padding: 30px;
+    }
+
+    .result-card {
+        grid-template-columns: 1fr 1fr;
+    }
+
+}
+
+/* =========================================
+   🖥 DESKTOP VIEW (Above 1024px)
+========================================= */
+
+@media (min-width: 1025px) {
+
+    .calculator-card {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .result-card {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+}
+</style>
+
+<section class="prepayment-wrapper">
+
+    <h2>EMI Prepayment Calculator</h2>
+    <p>Simulate early loan closure and calculate interest savings.</p>
+
+    <div class="calculator-card">
+
+        <label>Loan Amount</label>
+        <input type="number" id="pp_principal" placeholder="Loan Amount">
+
+        <label>Interest Rate (%)</label>
+        <input type="number" id="pp_rate" step="0.01" placeholder="Interest Rate">
+
+        <label>Tenure (Months)</label>
+        <input type="number" id="pp_tenure" placeholder="Tenure in Months">
+
+        <hr>
+
+        <h4>Lump Sum Prepayment</h4>
+        <label>Prepayment Amount</label>
+        <input type="number" id="pp_lump_sum" placeholder="Amount">
+
+        <label>After Month</label>
+        <input type="number" id="pp_after_month" placeholder="After how many months">
+
+        <hr>
+
+        <h4>OR Monthly Extra EMI</h4>
+        <label>Extra Monthly Amount</label>
+        <input type="number" id="pp_extra_monthly" placeholder="Extra EMI">
+
+        <button id="simulateBtn" class="primary-btn">
+            Simulate Prepayment
+        </button>
+
+    </div>
+
+</section>
+
+<section class="prepayment-result-section">
+
+    <h3>Simulation Result</h3>
+
+    <div class="result-card" id="prepaymentResult">
+
+        <div class="result-item">
+            <span>New Tenure</span>
+            <strong id="pp_new_tenure">--</strong>
+        </div>
+
+        <div class="result-item">
+            <span>Tenure Reduced</span>
+            <strong id="pp_tenure_reduced">--</strong>
+        </div>
+
+        <div class="result-item">
+            <span>Interest Saved</span>
+            <strong id="pp_interest_saved">--</strong>
+        </div>
+
+    </div>
+
+</section>
+
+<script src="{{ url_for('static', filename='js/prepayment.js') }}"></script>
+
+{% endblock %}

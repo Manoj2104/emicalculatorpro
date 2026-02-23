@@ -1,0 +1,464 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+:root{
+--primary:#00d09c;
+--dark:#111827;
+--muted:#6b7280;
+--bg:#f5f7fb;
+}
+
+body{
+background:var(--bg);
+}
+
+.sip-wrapper{
+max-width:1200px;
+margin:80px auto;
+padding:20px;
+}
+
+.sip-card{
+background:white;
+padding:60px;
+border-radius:24px;
+box-shadow:0 30px 80px rgba(0,0,0,0.06);
+display:grid;
+grid-template-columns: 1.1fr 0.9fr;  /* 👈 better proportion */
+gap:60px;
+align-items:center;
+max-width:1100px;
+margin:auto;
+}
+
+.input-group{
+margin-bottom:35px;
+}
+
+.input-group label{
+font-size:14px;
+color:var(--muted);
+margin-bottom:8px;
+display:block;
+}
+
+input[type=number]{
+width:180px;
+padding:10px;
+font-size:20px;
+font-weight:600;
+border:1px solid #e5e7eb;
+border-radius:8px;
+outline:none;
+margin-bottom:12px;
+}
+
+input[type=number]:focus{
+border-color:var(--primary);
+box-shadow:0 0 0 3px rgba(0,208,156,0.15);
+}
+
+input[type=range]{
+width:100%;
+appearance:none;
+height:6px;
+background:#e5e7eb;
+border-radius:10px;
+outline:none;
+}
+
+input[type=range]::-webkit-slider-thumb{
+appearance:none;
+height:18px;
+width:18px;
+background:var(--primary);
+border-radius:50%;
+cursor:pointer;
+box-shadow:0 2px 8px rgba(0,0,0,0.2);
+}
+
+.result-box{
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:0 20px;
+}
+.future-value{
+font-size:48px;
+font-weight:800;
+color:var(--primary);
+margin-bottom:10px;
+}
+
+.subtext{
+color:var(--muted);
+margin-bottom:20px;
+}
+
+.chart-container{
+width:300px;
+height:300px;
+margin:25px auto;
+}
+
+.sip-wrapper{
+max-width:1200px;
+margin:80px auto 120px;
+padding:0 30px;
+}
+
+.breakdown{
+font-size:15px;
+color:#374151;
+margin-top:20px;
+}
+
+@media(max-width:900px){
+.sip-card{
+grid-template-columns:1fr;
+gap:40px;
+padding:35px;
+}
+.future-value{
+font-size:36px;
+}
+}
+
+.chart-container{
+width:320px;
+height:320px;
+margin:auto;
+}
+canvas{
+width:100% !important;
+height:100% !important;
+}
+
+
+/* ===================================== */
+/* 📱 MOBILE (Below 600px) */
+/* ===================================== */
+
+@media(max-width:600px){
+
+.sip-wrapper{
+margin:40px auto 80px;
+padding:0 15px;
+}
+
+.sip-wrapper h2{
+font-size:22px;
+}
+
+.sip-card{
+grid-template-columns:1fr;
+gap:35px;
+padding:30px;
+border-radius:18px;
+}
+
+input[type=number]{
+max-width:100%;
+font-size:16px;
+}
+
+.future-value{
+font-size:32px;
+}
+
+.chart-container{
+width:240px;
+height:240px;
+}
+
+.breakdown{
+font-size:14px;
+}
+
+}
+
+/* ===================================== */
+/* 📲 TABLET (601px – 1024px) */
+/* ===================================== */
+
+@media(min-width:601px) and (max-width:1024px){
+
+.sip-wrapper{
+margin:60px auto 100px;
+padding:0 25px;
+}
+
+.sip-card{
+grid-template-columns:1fr;
+gap:45px;
+padding:45px;
+}
+
+.future-value{
+font-size:40px;
+}
+
+.chart-container{
+width:280px;
+height:280px;
+}
+
+}
+
+/* ===================================== */
+/* 🖥 DESKTOP (1025px – 1440px) */
+/* ===================================== */
+
+@media(min-width:1025px) and (max-width:1440px){
+
+.sip-card{
+padding:60px;
+gap:60px;
+}
+
+}
+
+/* ===================================== */
+/* 🖥 LARGE DESKTOP (Above 1440px) */
+/* ===================================== */
+
+@media(min-width:1441px){
+
+.sip-wrapper{
+max-width:1350px;
+}
+
+.sip-card{
+padding:75px;
+gap:80px;
+}
+
+.future-value{
+font-size:60px;
+}
+
+.chart-container{
+width:360px;
+height:360px;
+}
+
+}
+
+</style>
+
+<div class="sip-wrapper">
+
+<h2>SIP Calculator</h2><br><br>
+
+<div class="sip-card">
+
+<!-- LEFT -->
+<div>
+
+<div class="input-group">
+<label>Monthly Investment</label>
+<input type="number" 
+       id="monthlyInputBox" 
+       value="5000" 
+       min="500" 
+       max="1000000"
+       step="500">
+<input type="range" 
+       id="monthly" 
+       min="500" 
+       max="1000000" 
+       step="500" 
+       value="5000">
+</div>
+
+<div class="input-group">
+<label>Expected Return Rate (p.a %)</label>
+<input type="number" 
+       id="rateInputBox" 
+       value="12" 
+       min="1" 
+       max="30">
+<input type="range" 
+       id="rate" 
+       min="1" 
+       max="30" 
+       value="12">
+</div>
+
+<div class="input-group">
+<label>Time Period (Years)</label>
+<input type="number" 
+       id="yearsInputBox" 
+       value="10" 
+       min="1" 
+       max="40">
+<input type="range" 
+       id="years" 
+       min="1" 
+       max="40" 
+       value="10">
+</div>
+
+</div>
+
+<!-- RIGHT -->
+<div class="result-box">
+
+<div class="future-value">
+₹ <span id="futureValue"></span>
+</div>
+
+<div class="subtext">Estimated Returns</div>
+
+<div class="chart-container">
+<canvas id="sipChart"></canvas>
+</div>
+
+<div class="breakdown">
+<p><strong>Total Invested:</strong> ₹ <span id="investedVal"></span></p>
+<p><strong>Estimated Gains:</strong> ₹ <span id="gainsVal"></span></p>
+</div>
+
+</div>
+
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+const monthlySlider = document.getElementById("monthly");
+const rateSlider = document.getElementById("rate");
+const yearsSlider = document.getElementById("years");
+
+const monthlyBox = document.getElementById("monthlyInputBox");
+const rateBox = document.getElementById("rateInputBox");
+const yearsBox = document.getElementById("yearsInputBox");
+
+const ctx = document.getElementById("sipChart").getContext("2d");
+
+let sipChart;
+
+/* CENTER TEXT PLUGIN */
+const centerTextPlugin = {
+id: 'centerText',
+beforeDraw(chart) {
+const { width, height } = chart;
+const ctx = chart.ctx;
+const total = chart.data.datasets[0].data.reduce((a,b)=>a+b,0);
+
+ctx.save();
+ctx.font = "bold 20px sans-serif";
+ctx.fillStyle = "#111827";
+ctx.textAlign = "center";
+ctx.textBaseline = "middle";
+ctx.fillText(
+"₹ " + total.toLocaleString("en-IN",{maximumFractionDigits:0}),
+width / 2,
+height / 2
+);
+ctx.restore();
+}
+};
+
+Chart.register(centerTextPlugin);
+
+function calculateSIP(){
+
+let monthly = parseFloat(monthlyBox.value) || 0;
+let annualRate = parseFloat(rateBox.value) || 0;
+let years = parseFloat(yearsBox.value) || 0;
+
+/* 🔥 VALIDATION + CLAMP */
+if(monthly < 500) monthly = 500;
+if(monthly > 1000000) monthly = 1000000;
+
+if(annualRate < 1) annualRate = 1;
+if(annualRate > 30) annualRate = 30;
+
+if(years < 1) years = 1;
+if(years > 40) years = 40;
+
+/* Sync back to UI */
+monthlyBox.value = monthly;
+rateBox.value = annualRate;
+yearsBox.value = years;
+
+monthlySlider.value = monthly;
+rateSlider.value = annualRate;
+yearsSlider.value = years;
+
+/* Calculation */
+const r = annualRate / 12 / 100;
+const n = years * 12;
+
+let futureValue = r > 0
+? monthly * (((Math.pow(1+r,n)-1)/r)*(1+r))
+: monthly * n;
+
+let invested = monthly * n;
+let gains = futureValue - invested;
+
+futureValue = isFinite(futureValue) ? futureValue : 0;
+gains = isFinite(gains) ? gains : 0;
+
+/* Update UI */
+document.getElementById("futureValue").innerText =
+futureValue.toLocaleString("en-IN",{maximumFractionDigits:0});
+
+document.getElementById("investedVal").innerText =
+invested.toLocaleString("en-IN",{maximumFractionDigits:0});
+
+document.getElementById("gainsVal").innerText =
+gains.toLocaleString("en-IN",{maximumFractionDigits:0});
+
+renderChart(invested,gains);
+}
+
+function renderChart(invested,gains){
+
+if(sipChart){
+sipChart.destroy();
+}
+
+sipChart = new Chart(ctx,{
+type:"doughnut",
+data:{
+labels:["Invested","Gains"],
+datasets:[{
+data:[invested,gains],
+backgroundColor:["#00d09c","#3b82f6"],
+borderWidth:0
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+cutout:"70%",
+plugins:{
+legend:{ position:"bottom" }
+}
+}
+});
+}
+
+/* SYNC EVENTS */
+monthlySlider.addEventListener("input",()=>{monthlyBox.value=monthlySlider.value;calculateSIP();});
+rateSlider.addEventListener("input",()=>{rateBox.value=rateSlider.value;calculateSIP();});
+yearsSlider.addEventListener("input",()=>{yearsBox.value=yearsSlider.value;calculateSIP();});
+
+monthlyBox.addEventListener("input",()=>{monthlySlider.value=monthlyBox.value;calculateSIP();});
+rateBox.addEventListener("input",()=>{rateSlider.value=rateBox.value;calculateSIP();});
+yearsBox.addEventListener("input",()=>{yearsSlider.value=yearsBox.value;calculateSIP();});
+
+calculateSIP();
+
+});
+</script>
+
+{% endblock %}

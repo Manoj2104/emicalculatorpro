@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>{{ seo.title if seo else "EMI Calculator Pro" }}</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--primary:#00d09c;
+--primary-dark:#00b388;
+--dark:#0f172a;
+--gray:#64748b;
+--light:#f8fafc;
+--border:#e2e8f0;
+}
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Inter',sans-serif;
+}
+
+body{
+background:#ffffff;
+color:var(--dark);
+line-height:1.6;
+overflow-x:hidden;
+}
+
+.container{
+max-width:1200px;
+margin:auto;
+padding:0 20px;
+}
+
+/* ================= NAVBAR ================= */
+
+.navbar{
+position:sticky;
+top:0;
+background:rgba(255,255,255,0.85);
+backdrop-filter:blur(12px);
+border-bottom:1px solid var(--border);
+z-index:1000;
+}
+
+.nav-flex{
+display:flex;
+justify-content:space-between;
+align-items:center;
+height:75px;
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:10px;
+font-weight:800;
+font-size:20px;
+}
+
+.logo-circle{
+width:34px;
+height:34px;
+border-radius:50%;
+background:linear-gradient(135deg,#2563eb,var(--primary));
+}
+
+/* CENTER NAV */
+
+.nav-center{
+display:flex;
+align-items:center;
+gap:35px;
+}
+
+.nav-links{
+display:flex;
+gap:28px;
+align-items:center;
+}
+
+.nav-links a{
+text-decoration:none;
+color:var(--gray);
+font-weight:500;
+transition:.3s;
+position:relative;
+}
+
+.nav-links a:hover{
+color:var(--primary);
+}
+
+/* UNDERLINE HOVER */
+.nav-links a::after{
+content:"";
+position:absolute;
+bottom:-6px;
+left:0;
+width:0;
+height:2px;
+background:var(--primary);
+transition:.3s;
+}
+
+.nav-links a:hover::after{
+width:100%;
+}
+
+/* SEARCH */
+
+.search-box input{
+padding:8px 14px;
+border-radius:8px;
+border:1px solid var(--border);
+font-size:14px;
+width:180px;
+transition:.3s;
+}
+
+.search-box input:focus{
+outline:none;
+border-color:var(--primary);
+}
+
+/* MEGA MENU */
+
+.nav-item{
+position:relative;
+}
+
+.mega-menu{
+position:absolute;
+top:60px;
+left:-300px;
+width:900px;
+background:white;
+padding:40px;
+border-radius:20px;
+box-shadow:0 30px 80px rgba(0,0,0,0.08);
+display:none;
+grid-template-columns:repeat(3,1fr);
+gap:35px;
+}
+
+.mega-menu{
+position:absolute;
+top:60px;
+left:-300px;
+width:900px;
+background:white;
+padding:40px;
+border-radius:20px;
+box-shadow:0 30px 80px rgba(0,0,0,0.08);
+display:none;
+grid-template-columns:repeat(3,1fr);
+gap:35px;
+opacity:0;
+transform:translateY(10px);
+transition:all .25s ease;
+}
+
+.mega-menu.active{
+display:grid;
+opacity:1;
+transform:translateY(0);
+}
+
+.mega-section h4{
+font-size:14px;
+font-weight:700;
+margin-bottom:15px;
+color:var(--dark);
+}
+
+.mega-section a{
+display:block;
+margin-bottom:10px;
+font-size:14px;
+color:var(--gray);
+transition:.2s;
+}
+
+.mega-section a:hover{
+color:var(--primary);
+transform:translateX(5px);
+}
+
+/* CTA BUTTON */
+
+.nav-btn{
+background:var(--primary);
+color:white;
+padding:10px 24px;
+border-radius:12px;
+font-weight:600;
+text-decoration:none;
+box-shadow:0 15px 35px rgba(0,208,156,0.35);
+transition:.3s;
+}
+
+.nav-btn:hover{
+background:var(--primary-dark);
+transform:translateY(-2px);
+}
+
+/* ================= MOBILE ================= */
+
+.menu-toggle{
+display:none;
+font-size:24px;
+cursor:pointer;
+}
+
+.mobile-menu{
+display:none;
+flex-direction:column;
+position:absolute;
+top:75px;
+right:0;
+background:white;
+width:260px;
+padding:20px;
+box-shadow:-10px 20px 40px rgba(0,0,0,0.1);
+gap:15px;
+}
+
+.mobile-menu a{
+text-decoration:none;
+color:var(--dark);
+font-weight:500;
+}
+
+.mobile-menu.active{
+display:flex;
+}
+
+@media(max-width:992px){
+
+.nav-center{
+display:none;
+}
+
+.menu-toggle{
+display:block;
+}
+
+}
+
+/* ================= FOOTER ================= */
+
+footer{
+margin-top:100px;
+padding:60px 20px;
+background:#0f172a;
+color:#cbd5e1;
+text-align:center;
+font-size:14px;
+}
+
+footer strong{
+color:white;
+}
+
+/* ========================================
+   LARGE LAPTOP (Below 1200px)
+======================================== */
+
+@media (max-width: 1199px){
+
+.container{
+max-width: 95%;
+}
+
+.mega-menu{
+left:-250px;
+width:800px;
+}
+
+.hero h1{
+font-size:56px;
+}
+
+}
+
+/* ========================================
+   TABLET VIEW (Below 992px)
+======================================== */
+
+@media (max-width: 992px){
+
+/* NAVBAR */
+
+.nav-center{
+display:none;
+}
+
+.menu-toggle{
+display:block;
+}
+
+.nav-btn{
+display:none;
+}
+
+/* HERO */
+
+.hero{
+padding:120px 20px;
+text-align:center;
+}
+
+.hero h1{
+font-size:42px;
+line-height:1.2;
+}
+
+.hero p{
+font-size:18px;
+}
+
+/* BUTTON STACK */
+
+.hero-buttons{
+flex-direction:column;
+align-items:center;
+gap:15px;
+}
+
+/* MEGA MENU BECOMES FULL WIDTH */
+
+.mega-menu{
+position:static;
+width:100%;
+grid-template-columns:1fr 1fr;
+box-shadow:none;
+padding:20px;
+margin-top:15px;
+}
+
+}
+
+/* ========================================
+   MOBILE VIEW (Below 768px)
+======================================== */
+
+@media (max-width: 768px){
+
+/* NAVBAR HEIGHT */
+
+.nav-flex{
+height:65px;
+}
+
+/* LOGO */
+
+.logo{
+font-size:18px;
+}
+
+.logo-circle{
+width:28px;
+height:28px;
+}
+
+/* MOBILE MENU */
+
+.mobile-menu{
+width:100%;
+right:0;
+border-radius:0;
+}
+
+/* HERO */
+
+.hero{
+min-height:70vh;
+padding:80px 20px;
+}
+
+.hero h1{
+font-size:32px;
+letter-spacing:-1px;
+}
+
+.hero p{
+font-size:16px;
+margin-bottom:25px;
+}
+
+/* BUTTON FULL WIDTH */
+
+.primary-btn,
+.secondary-btn{
+width:100%;
+max-width:280px;
+}
+
+/* FOOTER */
+
+footer{
+padding:40px 20px;
+font-size:13px;
+}
+
+}
+
+/* ========================================
+   SMALL MOBILE (Below 480px)
+======================================== */
+
+@media (max-width: 480px){
+
+.hero h1{
+font-size:26px;
+}
+
+.hero p{
+font-size:14px;
+}
+
+.nav-btn{
+padding:8px 16px;
+font-size:14px;
+}
+
+}
+
+</style>
+
+<!-- Google AdSense Test Script -->
+<script async 
+src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3940256099942544"
+crossorigin="anonymous"></script>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+<div class="container nav-flex">
+
+<div class="logo">
+<div class="logo-circle"></div>
+EMI Calculator <span style="color:var(--primary)">Pro</span>
+</div>
+
+<div class="nav-center">
+
+<div class="nav-links">
+
+<a href="/">Home</a>
+
+<div class="nav-item" id="toolsMenu">
+<a href="#" id="toolsTrigger">Tools ▾</a>
+
+<div class="mega-menu">
+
+<div class="mega-section">
+<h4>Loan Tools</h4>
+<a href="/calculator/">EMI Calculator</a>
+<a href="/calculator/prepayment-calculator">Prepayment Calculator</a>
+<a href="/calculator/home-loan-eligibility">Loan Eligibility</a>
+<a href="/calculator/dti-calculator">DTI Calculator</a>
+<a href="/calculator/credit-card-emi">Credit Card EMI</a>
+</div>
+
+<div class="mega-section">
+<h4>Investment Tools</h4>
+<a href="/calculator/sip-calculator">SIP Calculator</a>
+<a href="/calculator/lumpsum-calculator">Lumpsum Calculator</a>
+<a href="/calculator/fd-calculator">FD Calculator</a>
+<a href="/calculator/rd-calculator">RD Calculator</a>
+</div>
+
+<div class="mega-section">
+<h4>Tax & Planning</h4>
+<a href="/calculator/gst-calculator">GST Calculator</a>
+<a href="/calculator/inflation-calculator">Inflation Calculator</a>
+<a href="/calculator/retirement-calculator">Retirement Planner</a>
+</div>
+
+</div>
+</div>
+
+<a href="/loan-comparison-calculator">Compare</a>
+
+</div>
+
+<div class="search-box">
+<input type="text" placeholder="Search tool...">
+</div>
+
+</div>
+
+<a href="/calculator/" class="nav-btn">Get Started</a>
+
+<div class="menu-toggle" onclick="toggleMobile()">☰</div>
+
+<div class="mobile-menu" id="mobileMenu">
+<a href="/">Home</a>
+<a href="/calculator/">EMI Calculator</a>
+<a href="/calculator/sip-calculator">SIP</a>
+<a href="/loan-comparison-calculator">Compare</a>
+</div>
+
+</div>
+</div>
+
+{% block content %}{% endblock %}
+
+<footer>
+<strong>© 2026 EMI Calculator Pro</strong><br>
+Smart Financial Planning | Compare Smarter | Save More
+</footer>
+
+<script>
+function toggleMobile(){
+document.getElementById("mobileMenu").classList.toggle("active");
+}
+</script>
+<script>
+const trigger = document.getElementById("toolsTrigger");
+const menu = document.querySelector(".mega-menu");
+const wrapper = document.getElementById("toolsMenu");
+
+let timeout;
+
+trigger.addEventListener("mouseenter", () => {
+clearTimeout(timeout);
+menu.classList.add("active");
+});
+
+wrapper.addEventListener("mouseenter", () => {
+clearTimeout(timeout);
+menu.classList.add("active");
+});
+
+wrapper.addEventListener("mouseleave", () => {
+timeout = setTimeout(() => {
+menu.classList.remove("active");
+}, 200); // small delay
+});
+
+document.addEventListener("click", function(e){
+if(!wrapper.contains(e.target)){
+menu.classList.remove("active");
+}
+});
+</script>
+
+</body>
+</html>

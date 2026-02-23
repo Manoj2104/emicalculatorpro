@@ -1,0 +1,287 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+
+body{
+background:linear-gradient(135deg,#eef2ff,#ecfdf5);
+margin:0;
+font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;
+}
+
+.dti-wrapper{
+max-width:1100px;
+margin:100px auto;
+padding:0 40px;
+}
+
+.dti-wrapper h2{
+font-size:32px;
+font-weight:800;
+margin-bottom:10px;
+}
+
+.dti-card{
+background:white;
+padding:60px;
+border-radius:28px;
+box-shadow:0 40px 100px rgba(0,0,0,0.08);
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:60px;
+align-items:center;
+transition:0.3s ease;
+}
+
+.input-group{
+margin-bottom:25px;
+}
+
+.input-group label{
+display:block;
+margin-bottom:8px;
+font-weight:600;
+color:#374151;
+font-size:15px;
+}
+
+input{
+width:100%;
+max-width:260px;
+padding:12px;
+font-size:18px;
+border:1px solid #e5e7eb;
+border-radius:12px;
+transition:0.2s ease;
+}
+
+input:focus{
+outline:none;
+border-color:#00d09c;
+box-shadow:0 0 0 3px rgba(0,208,156,0.15);
+}
+
+.result-box{
+text-align:center;
+}
+
+.dti-value{
+font-size:56px;
+font-weight:900;
+margin-bottom:10px;
+}
+
+.status{
+font-size:18px;
+font-weight:600;
+margin-top:10px;
+}
+
+.progress-bar{
+width:100%;
+height:14px;
+background:#e5e7eb;
+border-radius:20px;
+margin-top:25px;
+overflow:hidden;
+}
+
+.progress-fill{
+height:100%;
+width:0%;
+background:#00d09c;
+transition:0.4s ease;
+}
+
+/* ===================================== */
+/* 📱 MOBILE (Below 600px) */
+/* ===================================== */
+
+@media(max-width:600px){
+
+.dti-wrapper{
+margin:40px auto;
+padding:0 15px;
+}
+
+.dti-wrapper h2{
+font-size:22px;
+}
+
+.dti-card{
+grid-template-columns:1fr;
+padding:30px;
+gap:30px;
+border-radius:20px;
+}
+
+input{
+max-width:100%;
+font-size:16px;
+}
+
+.dti-value{
+font-size:38px;
+}
+
+.status{
+font-size:14px;
+}
+
+}
+
+/* ===================================== */
+/* 📲 TABLET (601px – 1024px) */
+/* ===================================== */
+
+@media(min-width:601px) and (max-width:1024px){
+
+.dti-wrapper{
+margin:70px auto;
+padding:0 25px;
+}
+
+.dti-card{
+grid-template-columns:1fr;
+padding:45px;
+gap:40px;
+}
+
+.dti-value{
+font-size:48px;
+}
+
+}
+
+/* ===================================== */
+/* 🖥 LARGE DESKTOP (Above 1200px) */
+/* ===================================== */
+
+@media(min-width:1200px){
+
+.dti-wrapper{
+max-width:1200px;
+}
+
+.dti-card{
+padding:70px;
+gap:80px;
+}
+
+.dti-value{
+font-size:64px;
+}
+
+}
+
+</style>
+<div class="dti-wrapper">
+<h2>Debt-to-Income Ratio Calculator</h2>
+<p style="color:#6b7280;">Check how much of your income goes toward debt payments</p>
+
+<div class="dti-card">
+
+<!-- LEFT -->
+<div>
+
+<div class="input-group">
+<label>Gross Monthly Income (₹)</label>
+<input type="number" id="income" value="50000">
+</div>
+
+<div class="input-group">
+<label>Total Monthly Debt Payments (₹)</label>
+<input type="number" id="debt" value="20000">
+</div>
+
+</div>
+
+<!-- RIGHT -->
+<div class="result-box">
+
+<div class="dti-value" id="dtiValue">0%</div>
+<div class="status" id="dtiStatus"></div>
+
+<div class="progress-bar">
+<div class="progress-fill" id="progressFill"></div>
+</div>
+
+</div>
+
+</div>
+</div>
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+const dtiValue = document.getElementById("dtiValue");
+const dtiStatus = document.getElementById("dtiStatus");
+const progressFill = document.getElementById("progressFill");
+
+function calculateDTI(){
+
+let income = parseFloat(document.getElementById("income").value);
+let debt = parseFloat(document.getElementById("debt").value);
+
+/* Reset UI first */
+dtiStatus.innerText = "";
+progressFill.style.width = "0%";
+
+if(!income || income <= 0){
+dtiValue.innerText = "0%";
+return;
+}
+
+if(!debt || debt < 0){
+debt = 0;
+}
+
+let dti = (debt / income) * 100;
+let cappedDTI = Math.min(dti,100);
+
+dtiValue.innerText = dti.toFixed(2) + "%";
+
+let color = "#00d09c";
+let statusText = "";
+
+if(dti <= 30){
+statusText = "Healthy – You have room for more credit.";
+color = "#00d09c";
+}
+else if(dti <= 40){
+statusText = "Moderate – Be cautious with new loans.";
+color = "#f59e0b";
+}
+else if(dti <= 50){
+statusText = "Risky – High debt burden.";
+color = "#ef4444";
+}
+else if(dti <= 100){
+statusText = "Very Risky – Debt is too high.";
+color = "#b91c1c";
+}
+else{
+statusText = "Critical – Debt exceeds income!";
+color = "#7f1d1d";
+}
+
+let recommendedEMI = income * 0.30;
+
+statusText += " | Recommended Max EMI: ₹ " +
+recommendedEMI.toLocaleString("en-IN",{maximumFractionDigits:0});
+
+dtiStatus.innerText = statusText;
+dtiStatus.style.color = color;
+
+progressFill.style.width = cappedDTI + "%";
+progressFill.style.background = color;
+}
+
+document.querySelectorAll("input").forEach(input=>{
+input.addEventListener("input", calculateDTI);
+});
+
+calculateDTI();
+
+});
+</script>
+{% endblock %}

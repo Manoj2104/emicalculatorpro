@@ -1,0 +1,488 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+.prepay-container{
+max-width:1100px;
+margin:60px auto;
+padding:20px;
+}
+
+.prepay-card{
+background:white;
+padding:30px;
+border-radius:20px;
+box-shadow:0 15px 40px rgba(0,0,0,0.05);
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:25px;
+}
+
+input, select{
+width:100%;
+padding:12px;
+margin-bottom:15px;
+border:1px solid #e5e7eb;
+border-radius:10px;
+}
+
+button{
+background:#00d09c;
+color:white;
+border:none;
+padding:14px;
+border-radius:10px;
+font-weight:600;
+cursor:pointer;
+}
+
+.result-box{
+margin-top:30px;
+background:#f0fdf4;
+padding:20px;
+border-radius:15px;
+display:none;
+}
+
+:root{
+--primary:#00d09c;
+--dark:#111827;
+--light:#f9fafb;
+--danger:#dc2626;
+--gradient:linear-gradient(135deg,#00d09c,#0ea5e9);
+}
+
+body{
+background:linear-gradient(120deg,#f0fdf4,#f5f7fa);
+}
+
+.prepay-container{
+max-width:1200px;
+margin:70px auto;
+padding:20px;
+}
+
+.prepay-header{
+text-align:center;
+margin-bottom:40px;
+}
+
+.prepay-header h2{
+font-size:38px;
+font-weight:800;
+background:var(--gradient);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.prepay-header p{
+color:#6b7280;
+margin-top:8px;
+}
+
+/* CARD */
+.prepay-card{
+background:rgba(255,255,255,0.7);
+backdrop-filter:blur(12px);
+padding:40px;
+border-radius:25px;
+box-shadow:0 25px 60px rgba(0,0,0,0.06);
+border:1px solid rgba(255,255,255,0.3);
+transition:0.3s;
+}
+
+.prepay-card:hover{
+transform:translateY(-6px);
+}
+
+.grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:30px;
+}
+
+label{
+font-weight:600;
+font-size:14px;
+color:#374151;
+}
+
+input, select{
+width:100%;
+padding:14px;
+margin:8px 0 18px;
+border:1px solid #e5e7eb;
+border-radius:12px;
+font-size:14px;
+transition:0.3s;
+}
+
+input:focus, select:focus{
+border-color:var(--primary);
+outline:none;
+box-shadow:0 0 0 3px rgba(0,208,156,0.15);
+}
+
+/* BUTTON */
+button{
+width:100%;
+background:var(--gradient);
+color:white;
+border:none;
+padding:16px;
+border-radius:14px;
+font-weight:700;
+font-size:16px;
+cursor:pointer;
+transition:0.3s;
+box-shadow:0 10px 30px rgba(0,208,156,0.3);
+}
+
+button:hover{
+transform:translateY(-3px);
+box-shadow:0 15px 40px rgba(0,208,156,0.4);
+}
+
+/* RESULT SECTION */
+.result-box{
+margin-top:40px;
+padding:35px;
+border-radius:20px;
+background:white;
+box-shadow:0 20px 60px rgba(0,0,0,0.05);
+display:none;
+animation:fadeIn 0.4s ease;
+}
+
+.result-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+margin-bottom:20px;
+}
+
+.result-card{
+background:#f0fdf4;
+padding:25px;
+border-radius:18px;
+text-align:center;
+box-shadow:0 10px 30px rgba(0,0,0,0.05);
+transition:0.3s;
+}
+
+.result-card:hover{
+transform:translateY(-5px);
+}
+
+.result-card h4{
+font-size:14px;
+color:#6b7280;
+margin-bottom:8px;
+}
+
+.result-card p{
+font-size:24px;
+font-weight:800;
+color:#00d09c;
+}
+
+.warning{
+color:var(--danger);
+font-weight:600;
+margin-top:15px;
+text-align:center;
+}
+
+@keyframes fadeIn{
+from{opacity:0; transform:translateY(10px);}
+to{opacity:1; transform:translateY(0);}
+}
+
+@media(max-width:768px){
+.grid{
+grid-template-columns:1fr;
+}
+.prepay-header h2{
+font-size:28px;
+}
+}
+
+/* ============================= */
+/* 📱 MOBILE (0px – 576px) */
+/* ============================= */
+@media (max-width:576px){
+
+.prepay-container{
+margin:30px auto;
+padding:15px;
+}
+
+.prepay-header h2{
+font-size:22px;
+line-height:1.3;
+}
+
+.prepay-header p{
+font-size:13px;
+}
+
+.prepay-card{
+padding:20px;
+border-radius:18px;
+}
+
+.grid{
+grid-template-columns:1fr;
+gap:15px;
+}
+
+input, select{
+padding:12px;
+font-size:13px;
+}
+
+button{
+padding:14px;
+font-size:14px;
+}
+
+.result-grid{
+grid-template-columns:1fr;
+gap:15px;
+}
+
+.result-card{
+padding:18px;
+}
+
+.result-card p{
+font-size:18px;
+}
+}
+
+
+/* ============================= */
+/* 📲 TABLET (577px – 992px) */
+/* ============================= */
+@media (min-width:577px) and (max-width:992px){
+
+.prepay-container{
+margin:50px auto;
+padding:20px;
+}
+
+.prepay-header h2{
+font-size:30px;
+}
+
+.prepay-card{
+padding:30px;
+}
+
+.grid{
+grid-template-columns:1fr 1fr;
+gap:20px;
+}
+
+.result-grid{
+grid-template-columns:repeat(2,1fr);
+}
+
+.result-card p{
+font-size:20px;
+}
+}
+
+
+/* ============================= */
+/* 💻 DESKTOP (993px and above) */
+/* ============================= */
+@media (min-width:993px){
+
+.prepay-container{
+margin:80px auto;
+}
+
+.prepay-header h2{
+font-size:38px;
+}
+
+.grid{
+grid-template-columns:1fr 1fr;
+gap:30px;
+}
+
+.result-grid{
+grid-template-columns:repeat(3,1fr);
+}
+
+.result-card p{
+font-size:24px;
+}
+}
+</style>
+
+<div class="prepay-container">
+
+<h2>💰 Loan Prepayment Calculator</h2>
+<p>See how extra payments reduce interest & tenure.</p>
+
+<div class="prepay-card">
+
+<div class="grid">
+
+<div>
+<label>Loan Amount (₹)</label>
+<input type="number" id="principal">
+
+<label>Interest Rate (%)</label>
+<input type="number" id="rate">
+
+<label>Tenure (Years)</label>
+<input type="number" id="tenureYears">
+</div>
+
+<div>
+<label>Extra Payment Amount (₹)</label>
+<input type="number" id="extraPayment">
+
+<label>Prepayment Type</label>
+<select id="prepayType">
+<option value="monthly">Monthly Extra Payment</option>
+<option value="onetime">One-Time Lump Sum</option>
+</select>
+</div>
+
+</div>
+
+<button onclick="calculatePrepayment()">Calculate Savings</button>
+
+<div class="result-box" id="resultBox">
+
+<div class="result-grid">
+
+<div class="result-card">
+<h4>Interest Saved</h4>
+<p id="interestSaved"></p>
+</div>
+
+<div class="result-card">
+<h4>Time Saved</h4>
+<p id="timeSaved"></p>
+</div>
+
+<div class="result-card">
+<h4>New Tenure</h4>
+<p id="newTenure"></p>
+</div>
+
+</div>
+
+<div id="warningMessage" class="warning"></div>
+
+</div>
+
+</div>
+</div>
+
+<script>
+
+function calculatePrepayment(){
+
+const P = parseFloat(document.getElementById("principal").value);
+const rate = parseFloat(document.getElementById("rate").value);
+const tenureYears = parseFloat(document.getElementById("tenureYears").value);
+const extra = parseFloat(document.getElementById("extraPayment").value);
+const type = document.getElementById("prepayType").value;
+
+const resultBox = document.getElementById("resultBox");
+const interestSaved = document.getElementById("interestSaved");
+const timeSaved = document.getElementById("timeSaved");
+const newTenure = document.getElementById("newTenure");
+
+resultBox.style.display="none";
+
+if(!P || !rate || !tenureYears || !extra){
+alert("Fill required fields");
+return;
+}
+
+const N = tenureYears * 12;
+const R = rate/12/100;
+
+const EMI = (P * R * Math.pow(1+R,N)) / (Math.pow(1+R,N)-1);
+
+/* Original Interest */
+const originalInterest = (EMI * N) - P;
+
+let balance = P;
+let months = 0;
+let totalInterest = 0;
+
+while(balance > 0){
+
+let interest = balance * R;
+let principalPayment = EMI - interest;
+
+/* Monthly extra */
+if(type === "monthly"){
+principalPayment += extra;
+}
+
+/* One-time lump sum */
+if(type === "onetime" && months === 0){
+if(extra >= balance){
+balance = 0;
+months++;
+break;
+}
+balance -= extra;
+}
+
+/* Prevent overpay */
+if(principalPayment >= balance){
+principalPayment = balance;
+}
+
+balance -= principalPayment;
+totalInterest += interest;
+months++;
+
+if(months > 600) break;
+}
+
+const interestSavedAmount = originalInterest - totalInterest;
+const monthsSaved = N - months;
+
+interestSaved.innerHTML = "₹ " + interestSavedAmount.toLocaleString("en-IN", {
+minimumFractionDigits:2,
+maximumFractionDigits:2
+});
+
+timeSaved.innerHTML = monthsSaved + " months";
+
+newTenure.innerHTML = months + " month" + (months > 1 ? "s" : "");
+
+const warning = document.getElementById("warningMessage");
+warning.innerHTML = "";
+
+/* Show warning ONLY for one-time lump sum closure */
+if (type === "onetime" && extra >= P) {
+    warning.innerHTML =
+    "⚠ Lump sum payment is greater than or equal to loan amount. Loan closes immediately.";
+}
+
+/* Optional: Smart monthly warning */
+else if (type === "monthly" && extra > EMI) {
+    warning.innerHTML =
+    "⚠ Extra monthly payment exceeds EMI. Loan will close much faster.";
+}
+
+resultBox.style.display = "block";
+}
+</script>
+
+{% endblock %}

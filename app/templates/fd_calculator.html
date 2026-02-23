@@ -1,0 +1,303 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+body{
+background:linear-gradient(135deg,#f0fdf4,#e0f2fe);
+}
+
+.fd-wrapper{
+max-width:1100px;
+margin:90px auto;
+padding:0 30px;
+}
+
+.fd-card{
+background:rgba(255,255,255,0.9);
+backdrop-filter:blur(20px);
+padding:70px;
+border-radius:28px;
+box-shadow:0 40px 100px rgba(0,0,0,0.08);
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:70px;
+align-items:center;
+}
+
+.input-group{
+margin-bottom:25px;
+}
+
+input, select{
+width:240px;
+padding:12px;
+font-size:18px;
+border:1px solid #e5e7eb;
+border-radius:12px;
+}
+
+.result-box{
+text-align:center;
+}
+
+.main-value{
+font-size:56px;
+font-weight:900;
+background:linear-gradient(90deg,#16a34a,#2563eb);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+margin-bottom:10px;
+}
+
+.stat-card{
+background:white;
+padding:18px;
+border-radius:16px;
+margin-top:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+display:flex;
+justify-content:space-between;
+}
+
+.chart-container{
+width:300px;
+height:300px;
+margin:30px auto;
+}
+
+canvas{
+width:100% !important;
+height:100% !important;
+}
+
+@media(max-width:900px){
+.fd-card{
+grid-template-columns:1fr;
+padding:40px;
+}
+.main-value{
+font-size:40px;
+}
+}
+
+/* ============================= */
+/* 📱 MOBILE (Below 600px) */
+/* ============================= */
+@media (max-width:600px){
+
+.fd-wrapper{
+margin:40px auto;
+padding:0 15px;
+}
+
+.fd-card{
+grid-template-columns:1fr;
+padding:30px;
+gap:35px;
+border-radius:20px;
+}
+
+input, select{
+width:100%;
+font-size:16px;
+}
+
+.main-value{
+font-size:32px;
+}
+
+.chart-container{
+width:220px;
+height:220px;
+}
+
+.stat-card{
+flex-direction:column;
+gap:8px;
+text-align:center;
+}
+
+}
+
+
+/* ============================= */
+/* 📲 TABLET (601px – 1024px) */
+/* ============================= */
+@media (min-width:601px) and (max-width:1024px){
+
+.fd-wrapper{
+margin:70px auto;
+padding:0 25px;
+}
+
+.fd-card{
+grid-template-columns:1fr;
+padding:45px;
+gap:45px;
+}
+
+input, select{
+width:100%;
+}
+
+.main-value{
+font-size:42px;
+}
+
+.chart-container{
+width:260px;
+height:260px;
+}
+
+}
+
+
+/* ============================= */
+/* 🖥 DESKTOP (1025px and above) */
+/* ============================= */
+@media (min-width:1025px){
+
+.fd-card{
+grid-template-columns:1fr 1fr;
+padding:70px;
+gap:70px;
+}
+
+.main-value{
+font-size:56px;
+}
+
+.chart-container{
+width:300px;
+height:300px;
+}
+
+}
+</style>
+
+<div class="fd-wrapper">
+<h2>FD Calculator</h2>
+<p style="color:#6b7280;">Calculate maturity amount of your Fixed Deposit</p>
+
+<div class="fd-card">
+
+<!-- LEFT -->
+<div>
+
+<div class="input-group">
+<label>Deposit Amount (₹)</label>
+<input type="number" id="principal" value="100000">
+</div>
+
+<div class="input-group">
+<label>Interest Rate (% p.a)</label>
+<input type="number" id="rate" value="7">
+</div>
+
+<div class="input-group">
+<label>Time (Years)</label>
+<input type="number" id="years" value="5">
+</div>
+
+<div class="input-group">
+<label>Compounding Frequency</label>
+<select id="frequency">
+<option value="1">Yearly</option>
+<option value="2">Half-Yearly</option>
+<option value="4" selected>Quarterly</option>
+<option value="12">Monthly</option>
+</select>
+</div>
+
+</div>
+
+<!-- RIGHT -->
+<div class="result-box">
+
+<div class="main-value">
+₹ <span id="maturityAmount">0</span>
+</div>
+<div>Maturity Amount</div>
+
+<div class="chart-container">
+<canvas id="fdChart"></canvas>
+</div>
+
+<div class="stat-card">
+<span>Total Interest Earned</span>
+<strong>₹ <span id="interestEarned">0</span></strong>
+</div>
+
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+const ctx = document.getElementById("fdChart").getContext("2d");
+let fdChart;
+
+function calculateFD(){
+
+let P = parseFloat(document.getElementById("principal").value);
+let r = parseFloat(document.getElementById("rate").value) / 100;
+let t = parseFloat(document.getElementById("years").value);
+let n = parseFloat(document.getElementById("frequency").value);
+
+if(!P || P<=0 || !t || t<=0){
+updateUI(0,0);
+return;
+}
+
+let A = P * Math.pow((1 + r/n), n*t);
+let interest = A - P;
+
+updateUI(A, interest);
+renderChart(P, interest);
+}
+
+function updateUI(amount, interest){
+
+document.getElementById("maturityAmount").innerText =
+amount.toLocaleString("en-IN",{maximumFractionDigits:0});
+
+document.getElementById("interestEarned").innerText =
+interest.toLocaleString("en-IN",{maximumFractionDigits:0});
+}
+
+function renderChart(principal, interest){
+
+if(fdChart) fdChart.destroy();
+
+fdChart = new Chart(ctx,{
+type:"doughnut",
+data:{
+labels:["Deposit","Interest"],
+datasets:[{
+data:[principal, interest],
+backgroundColor:["#16a34a","#2563eb"],
+borderWidth:0
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+cutout:"70%",
+plugins:{legend:{position:"bottom"}}
+}
+});
+}
+
+document.querySelectorAll("input, select").forEach(el=>{
+el.addEventListener("input", calculateFD);
+});
+
+calculateFD();
+
+});
+</script>
+
+{% endblock %}

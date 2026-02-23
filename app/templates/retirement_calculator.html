@@ -1,0 +1,362 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+body{
+background:linear-gradient(135deg,#f0f9ff,#ecfdf5);
+}
+
+.ret-wrapper{
+max-width:1200px;
+margin:100px auto;
+padding:0 40px;
+}
+
+.ret-card{
+background:rgba(255,255,255,0.95);
+backdrop-filter:blur(20px);
+padding:70px;
+border-radius:28px;
+box-shadow:0 40px 100px rgba(0,0,0,0.08);
+display:grid;
+grid-template-columns:1.1fr 1fr;
+gap:80px;
+align-items:center;
+}
+
+.input-group{
+margin-bottom:28px;
+}
+
+.input-group label{
+display:block;
+margin-bottom:6px;
+font-weight:600;
+color:#374151;
+}
+
+input{
+width:220px;
+padding:10px;
+font-size:18px;
+border:1px solid #e5e7eb;
+border-radius:10px;
+transition:0.2s ease;
+}
+
+input:focus{
+outline:none;
+border-color:#00d09c;
+box-shadow:0 0 0 3px rgba(0,208,156,0.15);
+}
+
+.result-box{
+text-align:center;
+}
+
+.future-value{
+font-size:54px;
+font-weight:900;
+background:linear-gradient(90deg,#00d09c,#3b82f6);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+margin-bottom:10px;
+}
+
+.subtitle{
+color:#6b7280;
+margin-bottom:20px;
+}
+
+.chart-container{
+width:320px;
+height:320px;
+margin:30px auto;
+filter:drop-shadow(0 20px 40px rgba(0,0,0,0.15));
+}
+
+canvas{
+width:100% !important;
+height:100% !important;
+}
+
+.stat-box{
+background:white;
+padding:18px;
+border-radius:14px;
+margin-top:15px;
+box-shadow:0 10px 25px rgba(0,0,0,0.05);
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.stat-box span{
+color:#6b7280;
+font-size:14px;
+}
+
+.stat-box strong{
+font-size:18px;
+}
+
+@media(max-width:950px){
+.ret-card{
+grid-template-columns:1fr;
+gap:40px;
+padding:40px;
+}
+}
+
+/* ============================= */
+/* 📱 MOBILE (Below 600px) */
+/* ============================= */
+@media (max-width:600px){
+
+.ret-wrapper{
+margin:40px auto;
+padding:0 15px;
+}
+
+.ret-card{
+grid-template-columns:1fr;
+padding:30px;
+gap:35px;
+border-radius:20px;
+}
+
+input{
+width:100%;
+font-size:16px;
+}
+
+.future-value{
+font-size:32px;
+}
+
+.chart-container{
+width:230px;
+height:230px;
+}
+
+.stat-box{
+flex-direction:column;
+gap:8px;
+text-align:center;
+}
+
+}
+
+
+/* ============================= */
+/* 📲 TABLET (601px – 1024px) */
+/* ============================= */
+@media (min-width:601px) and (max-width:1024px){
+
+.ret-wrapper{
+margin:70px auto;
+padding:0 25px;
+}
+
+.ret-card{
+grid-template-columns:1fr;
+padding:45px;
+gap:45px;
+}
+
+input{
+width:100%;
+}
+
+.future-value{
+font-size:42px;
+}
+
+.chart-container{
+width:270px;
+height:270px;
+}
+
+}
+
+
+/* ============================= */
+/* 🖥 DESKTOP (1025px and above) */
+/* ============================= */
+@media (min-width:1025px){
+
+.ret-card{
+grid-template-columns:1.1fr 1fr;
+padding:70px;
+gap:80px;
+}
+
+.future-value{
+font-size:54px;
+}
+
+.chart-container{
+width:320px;
+height:320px;
+}
+
+}
+</style>
+
+<div class="ret-wrapper">
+<h2>Retirement Calculator</h2>
+<p class="subtitle">Plan inflation-adjusted retirement corpus realistically</p>
+
+<div class="ret-card">
+
+<!-- LEFT -->
+<div>
+
+<div class="input-group">
+<label>Current Age</label>
+<input type="number" id="currentAge" value="30" min="18" max="70">
+</div>
+
+<div class="input-group">
+<label>Retirement Age</label>
+<input type="number" id="retAge" value="60" min="40" max="80">
+</div>
+
+<div class="input-group">
+<label>Current Annual Expense (₹)</label>
+<input type="number" id="annualExpense" value="600000">
+</div>
+
+<div class="input-group">
+<label>Expected Return Rate (% p.a)</label>
+<input type="number" id="returnRate" value="12">
+</div>
+
+<div class="input-group">
+<label>Expected Inflation Rate (% p.a)</label>
+<input type="number" id="inflationRate" value="6">
+</div>
+
+</div>
+
+<!-- RIGHT -->
+<div class="result-box">
+
+<div class="future-value">
+₹ <span id="corpusValue"></span>
+</div>
+
+<div class="subtitle">Required Retirement Corpus</div>
+
+<div class="chart-container">
+<canvas id="retChart"></canvas>
+</div>
+
+<div class="stat-box">
+<span>Years Left</span>
+<strong id="yearsLeft"></strong>
+</div>
+
+<div class="stat-box">
+<span>Monthly Investment Needed</span>
+<strong>₹ <span id="monthlyNeeded"></span></strong>
+</div>
+
+</div>
+</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+<script>
+document.addEventListener("DOMContentLoaded", function(){
+
+const ctx = document.getElementById("retChart").getContext("2d");
+let retChart;
+
+function calculateRetirement(){
+
+let currentAge = parseFloat(document.getElementById("currentAge").value);
+let retAge = parseFloat(document.getElementById("retAge").value);
+let annualExpense = parseFloat(document.getElementById("annualExpense").value);
+let returnRate = parseFloat(document.getElementById("returnRate").value) / 100;
+let inflation = parseFloat(document.getElementById("inflationRate").value) / 100;
+
+/* Basic Validation */
+if(retAge <= currentAge){
+retAge = currentAge + 5;
+document.getElementById("retAge").value = retAge;
+}
+
+let years = retAge - currentAge;
+
+/* Ensure minimum 5 year planning */
+if(years < 5){
+years = 5;
+document.getElementById("retAge").value = currentAge + 5;
+}
+
+/* Future Expense Adjusted For Inflation */
+let futureExpense = annualExpense * Math.pow((1 + inflation), years);
+
+/* Retirement Corpus Rule (25X annual expense) */
+let corpus = futureExpense * 25;
+
+/* Monthly SIP Needed */
+let r = returnRate / 12;
+let n = years * 12;
+
+let monthly = r > 0
+? corpus / (((Math.pow(1+r,n)-1)/r)*(1+r))
+: corpus / n;
+
+let totalContribution = monthly * n;
+let totalGrowth = corpus - totalContribution;
+
+/* Update UI */
+document.getElementById("corpusValue").innerText =
+corpus.toLocaleString("en-IN",{maximumFractionDigits:0});
+
+document.getElementById("yearsLeft").innerText = years;
+
+document.getElementById("monthlyNeeded").innerText =
+monthly.toLocaleString("en-IN",{maximumFractionDigits:0});
+
+renderChart(totalContribution, totalGrowth);
+}
+
+function renderChart(contribution, growth){
+
+if(retChart) retChart.destroy();
+
+retChart = new Chart(ctx,{
+type:"doughnut",
+data:{
+labels:["Total Contribution","Total Growth"],
+datasets:[{
+data:[contribution, growth],
+backgroundColor:["#3b82f6","#00d09c"],
+borderWidth:0
+}]
+},
+options:{
+responsive:true,
+maintainAspectRatio:false,
+cutout:"70%",
+plugins:{
+legend:{ position:"bottom" }
+}
+}
+});
+}
+
+document.querySelectorAll("input").forEach(input=>{
+input.addEventListener("input", calculateRetirement);
+});
+
+calculateRetirement();
+
+});
+</script>
+
+{% endblock %}

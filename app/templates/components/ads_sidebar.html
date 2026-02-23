@@ -1,0 +1,13 @@
+{% if features.ads and adsense_client %}
+<aside class="ad-sidebar">
+    <ins class="adsbygoogle"
+         style="display:block"
+         data-ad-client="{{ adsense_client }}"
+         data-ad-slot="SIDEBAR_AD_SLOT_ID"
+         data-ad-format="auto"
+         data-full-width-responsive="true"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</aside>
+{% endif %}

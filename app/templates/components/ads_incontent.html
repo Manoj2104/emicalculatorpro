@@ -1,0 +1,15 @@
+{% if features.ads and adsense_client %}
+<div class="ad-container ad-incontent">
+    <ins class="adsbygoogle"
+         style="display:block; text-align:center;"
+         data-ad-client="{{ adsense_client }}"
+         data-ad-slot="INCONTENT_AD_SLOT_ID"
+         data-ad-format="fluid"
+         data-ad-layout="in-article"
+         data-ad-layout-key="-gw-1+2a-9x+5c"
+         data-full-width-responsive="true"></ins>
+    <script>
+        (adsbygoogle = window.adsbygoogle || []).push({});
+    </script>
+</div>
+{% endif %}
